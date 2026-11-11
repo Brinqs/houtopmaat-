@@ -349,7 +349,8 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 @keyframes floaty { 50% { transform: translateY(-8px); } }
 
 /* ---------- Studio ---------- */
-.studio { --studio-h: calc(100dvh - 78px); height: var(--studio-h); min-height: 620px; display: grid; grid-template-rows: auto auto auto 1fr; background: var(--bg); border-bottom: 1px solid var(--border); }
+.studio { --studio-h: calc(100dvh - 78px); height: var(--studio-h); min-height: 620px; display: flex; flex-direction: column; background: var(--bg); border-bottom: 1px solid var(--border); }
+.studio[hidden] { display: none !important; }
 .studio__bar { display: flex; align-items: center; gap: 14px; padding: 12px 20px; background: #fff; border-bottom: 1px solid var(--border); }
 .studio__back { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border); background: #fff; display: grid; place-items: center; cursor: pointer; color: var(--ink); }
 .studio__back:hover { background: var(--wood-light); }
@@ -367,7 +368,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .ai-notice { padding: 10px 20px; background: #fff4e5; color: #8a4b00; font-size: 14px; border-bottom: 1px solid #f3d9b5; }
 .ai-notice code { background: rgba(0,0,0,.06); padding: 1px 5px; border-radius: 4px; }
 .studio__tabs { display: none; }
-.studio__grid { display: grid; grid-template-columns: 400px minmax(0, 1fr) 380px; min-height: 0; }
+.studio__grid { flex: 1; display: grid; grid-template-columns: 400px minmax(0, 1fr) 380px; min-height: 0; }
 .pane { min-height: 0; }
 
 .mydesigns-wrap { position: relative; }
@@ -513,7 +514,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
   .studio__tabs button[data-pane="chat"] { display: none; }
 }
 @media (max-width: 760px) {
-  .studio { --studio-h: calc(100dvh - 66px); grid-template-rows: auto auto auto 1fr auto; }
+  .studio { --studio-h: calc(100dvh - 66px); }
   .studio__bar { padding: 10px 12px; gap: 10px; }
   .studio__actions .btn[data-action] { display: none; }
   .studio__title strong { font-size: 16px; }
@@ -525,3 +526,10 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
   .hero-ai__visual { display: none; }
   .promptbar textarea { font-size: 16px; }
 }
+
+/* Full-screen meubelbouwer: alleen header + studio zichtbaar */
+body.studio-open .topbar,
+body.studio-open main > section:not(#studio),
+body.studio-open .footer { display: none !important; }
+body.studio-open { overflow: hidden; }
+body.studio-open .studio { height: calc(100dvh - var(--header-h, 78px)); min-height: 0; border-bottom: 0; }

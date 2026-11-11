@@ -94,8 +94,10 @@ function openStudio(firstPrompt) {
     viewer = new Viewer($('#studioViewer'));
     viewer.onHover = onPartHover;
   }
+  // full screen: alleen header + studio; hoogte exact op de header afstemmen
   const header = document.getElementById('header');
-  window.scrollTo({ top: $('#studio').offsetTop - header.offsetHeight, behavior: 'instant' });
+  document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px');
+  window.scrollTo({ top: 0, behavior: 'instant' });
   setPane('chat');
   if (firstPrompt) sendMessage(firstPrompt);
   else $('#chatInput').focus();
@@ -105,6 +107,7 @@ function closeStudio() {
   $('#studio').hidden = true;
   $('#hero').hidden = false;
   document.body.classList.remove('studio-open');
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 // ---------- chat rendering ----------
@@ -480,6 +483,7 @@ function toast(msg) {
 // Init
 // ---------------------------------------------------------------------------
 function init() {
+  addEventListener('resize', () => document.documentElement.style.setProperty('--header-h', document.getElementById('header').offsetHeight + 'px'));
   initHeroDemo();
   const hi = $('#heroInput');
   typewriter(hi);
