@@ -108,3 +108,12 @@ export function buildSawlist(parts) {
 }
 
 export const euro = n => '€ ' + (n || 0).toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+/** IKEA-achtige lettercodes: identieke onderdelen (zelfde materiaal + maat) krijgen dezelfde letter. */
+export function partLetters(parts) {
+  const s = buildSawlist(parts);
+  const letter = i => (i < 26 ? String.fromCharCode(65 + i) : String.fromCharCode(65 + Math.floor(i / 26) - 1) + String.fromCharCode(65 + (i % 26)));
+  const map = {};
+  const lines = s.lines.map((l, i) => { l.ids.forEach(id => (map[id] = letter(i))); return { ...l, letter: letter(i) }; });
+  return { map, lines };
+}

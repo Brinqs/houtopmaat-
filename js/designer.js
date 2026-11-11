@@ -1,6 +1,7 @@
 // AI-meubelontwerper: hero-promptbar, studio (chat + 3D + zaaglijst), opslaan en bestellen.
 import { Viewer } from './viewer.js';
 import { validateDesign, buildSawlist, euro, MATERIAL_BY_SLUG } from './sawlist.js';
+import { addToCart as storeAdd, updateBadges } from './store.js';
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -463,20 +464,21 @@ function openOrder() {
   $('#orderModal').hidden = false;
 }
 
-let cartCount = 0;
 function addToCart() {
-  cartCount += state.sawlist.partCount;
-  document.querySelectorAll('.badge').forEach(b => b.textContent = cartCount);
+  viewer.fit(viewer.bounds(), false);
+  const thumb = viewer.snapshot();
+  storeAdd(state.design, thumb);
   $('#orderModal').hidden = true;
-  toast(`${state.sawlist.partCount} gezaagde onderdelen toegevoegd aan je winkelwagen.`);
+  toast(`“${state.design.name}” staat in je winkelwagen.`, { href: 'shop.html#winkelwagen', label: 'Naar winkelwagen →' });
 }
 
 // ---------- toast ----------
 let toastTimer;
-function toast(msg) {
+function toast(msg, action) {
   const t = $('#toast'); t.textContent = msg; t.hidden = false;
+  if (action) { const a = document.createElement('a'); a.href = action.href; a.textContent = action.label; a.className = 'toast__link'; t.append(' ', a); }
   requestAnimationFrame(() => t.classList.add('is-on'));
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.classList.remove('is-on'); setTimeout(() => (t.hidden = true), 250); }, 3200);
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.classList.remove('is-on'); setTimeout(() => (t.hidden = true), 250); }, action ? 6000 : 3200);
 }
 
 // ---------------------------------------------------------------------------
@@ -522,5 +524,7 @@ function init() {
 
   fetch('/api/status').then(r => r.json()).then(s => { if (!s.ai) $('#aiNotice').hidden = false; }).catch(() => { $('#aiNotice').hidden = false; });
   renderSawlist(buildSawlist([]));
+  updateBadges();
+  if (location.hash === '#ontwerp') setTimeout(() => { hi.focus(); }, 300);
 }
 init();

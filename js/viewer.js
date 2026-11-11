@@ -43,8 +43,10 @@ const UNIT_BOX = new THREE.BoxGeometry(1, 1, 1);
 const UNIT_EDGES = new THREE.EdgesGeometry(UNIT_BOX);
 
 export class Viewer {
-  constructor(container, { interactive = true, autoRotate = false } = {}) {
+  constructor(container, { interactive = true, autoRotate = false, dimOpacity = 0.35, snapshot = false } = {}) {
     this.el = container;
+    this.dimOpacity = dimOpacity;
+    this.labelObjs = [];
     this.parts = new Map(); // id -> { group, mesh, data, anim }
     this.explode = 0; this.explodeTarget = 0;
     this.showDims = true;
@@ -53,7 +55,7 @@ export class Viewer {
     this.onHover = null;
     this.spawnClock = 0;
 
-    const r = this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const r = this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: snapshot });
     r.setPixelRatio(Math.min(devicePixelRatio, 2));
     r.outputColorSpace = THREE.SRGBColorSpace;
     r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05;
@@ -116,7 +118,7 @@ export class Viewer {
 
   // ---------- ontwerp bijwerken ----------
   /** Voegt een onderdeel toe of werkt het bij (met animatie). */
-  upsertPart(p) {
+  upsertPart(p, opts = {}) {
     const target = {
       pos: new THREE.Vector3((p.x + p.w / 2) * MM, (p.y + p.h / 2) * MM, (p.z + p.d / 2) * MM),
       size: new THREE.Vector3(p.w * MM, p.h * MM, p.d * MM),
@@ -135,7 +137,8 @@ export class Viewer {
       entry = { mesh, edges, data: p, target, removing: false,
         from: { pos: target.pos.clone().add(new THREE.Vector3(0, 0.25, 0)), size: target.size.clone().multiplyScalar(0.6) },
         t0: this.spawnClock, dur: 520, kind: 'spawn' };
-      this.spawnClock += 55; // gestaffeld opbouwen
+      if (opts.slideFrom) Object.assign(entry, { from: { pos: target.pos.clone().add(opts.slideFrom), size: target.size.clone() }, t0: now + (opts.delay || 0), dur: 1100, kind: 'slide' });
+      else this.spawnClock += 55; // gestaffeld opbouwen
       mesh.position.copy(entry.from.pos); mesh.scale.copy(entry.from.size);
       this.parts.set(p.id, entry);
     } else {
@@ -195,6 +198,42 @@ export class Viewer {
     this.sun.target.position.copy(center);
     if (!animate) { this.camera.position.copy(pos); this.controls.target.copy(center); return; }
     this.camAnim = { t0: performance.now(), dur: 900, fromPos: this.camera.position.clone(), toPos: pos, fromT: this.controls.target.clone(), toT: center };
+  }
+
+  /** Laat bestaande onderdelen opnieuw vanaf een offset (meters) op hun plek schuiven. */
+  slideIn(id, offset, delay = 0) {
+    const e = this.parts.get(id); if (!e) return;
+    Object.assign(e, { from: { pos: e.target.pos.clone().add(offset), size: e.target.size.clone() }, t0: performance.now() + delay, dur: 1100, kind: 'slide' });
+  }
+  /** Toont alleen deze onderdelen (zonder animatie voor de rest). */
+  removeExcept(ids) {
+    for (const [id, e] of this.parts) if (!ids.has(id)) { this._dispose(e); this.parts.delete(id); }
+    this._dirtyDims = true;
+  }
+  /** Letterlabels (CSS2D) op onderdelen: [{ id, text }]. */
+  setLabels(list) {
+    this.labelObjs.forEach(o => { o.parent?.remove(o); o.element.remove(); });
+    this.labelObjs = [];
+    for (const { id, text } of list) {
+      const e = this.parts.get(id); if (!e) continue;
+      const el = document.createElement('div'); el.className = 'part-label'; el.textContent = text;
+      const o = new CSS2DObject(el); e.mesh.add(o); this.labelObjs.push(o);
+    }
+  }
+  snapshot(type = 'image/jpeg', q = 0.82) {
+    this.controls.update();
+    this.renderer.render(this.scene, this.camera);
+    try {
+      // transparante canvas op lichte achtergrond, verkleind (scheelt opslag)
+      const src = this.renderer.domElement, s = Math.min(1, 480 / Math.max(src.width, src.height));
+      const c = document.createElement('canvas'); c.width = Math.round(src.width * s); c.height = Math.round(src.height * s);
+      const g = c.getContext('2d');
+      const grad = g.createRadialGradient(c.width / 2, c.height * 0.42, 10, c.width / 2, c.height / 2, Math.max(c.width, c.height) * 0.7);
+      grad.addColorStop(0, '#ffffff'); grad.addColorStop(1, '#efe8de');
+      g.fillStyle = grad; g.fillRect(0, 0, c.width, c.height);
+      g.drawImage(src, 0, 0, c.width, c.height);
+      return c.toDataURL(type, q);
+    } catch { return null; }
   }
 
   setExplode(on) { this.explodeTarget = on ? 1 : 0; }
@@ -276,12 +315,13 @@ export class Viewer {
         continue;
       }
       const k = e.kind === 'spawn' ? easeOutBack(t) : easeInOut(t);
+      if (e.kind === 'slide' && now < e.t0) { e.mesh.position.copy(e.from.pos); e.mesh.material.opacity = 0; e.edges.material.opacity = 0; continue; }
       const pos = e.from.pos.clone().lerp(e.target.pos, k);
       e.mesh.scale.copy(e.from.size.clone().lerp(e.target.size, Math.min(1, k)));
       if (this.explode > 0.001) pos.add(e.target.pos.clone().sub(center).multiplyScalar(0.45 * this.explode));
       e.mesh.position.copy(pos);
-      const vis = e.kind === 'spawn' ? Math.min(1, t * 2.5) : 1;
-      const dimF = e.dim ? 0.35 : 1;
+      const vis = e.kind === 'spawn' ? Math.min(1, t * 2.5) : e.kind === 'slide' ? Math.min(1, t * 4) : 1;
+      const dimF = e.dim ? this.dimOpacity : 1;
       e.mesh.material.opacity = vis * dimF;
       e.mesh.material.transparent = vis * dimF < 1;
       e.mesh.material.depthWrite = vis * dimF > 0.5;

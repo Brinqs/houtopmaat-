@@ -24,7 +24,10 @@ Zonder API-key draait de ontwerper in **demo-modus**: een vast voorbeeldscenario
   m²-prijs per dikte, minimaal € 2,50 per onderdeel, volle plaatlengte boven 200 cm, volle plaatbreedte boven 100 cm,
   staffelkorting per materiaal, verzending € 29,95 onder € 295.
 - `js/viewer.js`: 3D-viewer (Three.js): onderdelen bouwen live op, maatvoering, exploded view, hover-koppeling met de zaaglijst.
-- `js/designer.js`: hero-promptbar, studio (chat · 3D · zaaglijst), opslaan (localStorage) en bestellen.
+- `js/designer.js`: hero-promptbar, studio (chat · 3D · zaaglijst), opslaan (localStorage) en in winkelwagen.
+- `shop.html` + `js/shop.js`: winkelwagen → afrekenen (testbestelling, niets wordt afgerekend) → bedankpagina →
+  stap-voor-stap 3D-bouwinstructies (IKEA-stijl, lettercodes per onderdeel) met AI-bouwassistent.
+- `js/store.js`: winkelwagen en testbestellingen (localStorage).
 
 ## Hoe de AI werkt
 
@@ -36,4 +39,8 @@ Claude (`claude-opus-5-5`, adaptive thinking) heeft twee tools:
 Na elke ontwerpupdate krijgt Claude de berekende prijs en eventuele waarschuwingen terug (bijv. dikte niet leverbaar,
 past niet uit één plaat), zodat het die in de volgende beurt kan oplossen.
 
-Let op: reviewteksten op de homepage zijn placeholders. "In winkelwagen" is in deze demo niet gekoppeld aan de echte webshop.
+Bouwinstructies: na een (test)bestelling schrijft Claude via `/api/instructions` een bouwplan met de tool `assembly_plan`
+(stappen, gereedschap, beslag). De viewer schuift per stap de nieuwe onderdelen op hun plek. Zonder AI valt hij terug op een
+standaard bouwvolgorde op basis van de geometrie. De bouwassistent (`/api/chat`, mode `assembly`) kent het ontwerp, het plan en de huidige stap.
+
+Let op: reviewteksten op de homepage zijn placeholders. Bestellingen zijn testbestellingen en staan alleen in de browser.

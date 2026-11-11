@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Winkelwagen | HoutOpMaatGezaagd</title>
+<meta name="description" content="Plaatmateriaal, panelen en zaagwerk op maat. Direct online berekend, tot op de millimeter nauwkeurig gezaagd en geleverd binnen 3-8 werkdagen.">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<div class="topbar">
+  <div class="container topbar__inner">
+    <ul class="usps">
+      <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Tot op <strong>1 mm</strong> nauwkeurig gezaagd</li>
+      <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Levering binnen <strong>3-8 werkdagen</strong></li>
+      <li class="hide-sm"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Gratis bezorgd vanaf <strong>€ 295</strong> (NL) · € 500 (BE)</li>
+    </ul>
+    <div class="topbar__right">
+      <a href="#" class="stars-mini" aria-label="Google reviews">
+        <span class="stars">★★★★★</span> Google reviews
+      </a>
+      <a href="tel:0792040222">079 - 204 02 22</a>
+    </div>
+  </div>
+</div>
+
+<header class="header" id="header">
+  <div class="container header__inner">
+    <a href="index.html" class="logo" aria-label="HoutOpMaatGezaagd home">
+      <img src="img/logo.webp" alt="HoutOpMaatGezaagd.nl" width="400" height="247">
+    </a>
+
+    <nav class="nav" aria-label="Hoofdmenu">
+      <div class="nav__item has-mega">
+        <button class="nav__link" aria-expanded="false">Assortiment
+          <svg viewBox="0 0 24 24" class="chev"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="mega">
+          <div class="mega__cols">
+            <div>
+              <p class="mega__title">Plaatmateriaal</p>
+              <a href="#">MDF</a><a href="#">Multiplex</a><a href="#">Spaanplaat</a><a href="#">OSB</a><a href="#">Betonplex</a>
+            </div>
+            <div>
+              <p class="mega__title">Massief hout</p>
+              <a href="#">Eiken panelen</a><a href="#">Rubberwood panelen</a><a href="#">Meubelpanelen</a><a href="#">Traptreden</a>
+            </div>
+            <div>
+              <p class="mega__title">Afgewerkt</p>
+              <a href="#">MDF gefineerd</a><a href="#">Gegrond multiplex</a><a href="#">Spaanplaat wit</a><a href="#">Bekijk alles →</a>
+            </div>
+          </div>
+          <a href="#" class="mega__promo">
+            <img src="img/extra.webp" alt="">
+            <span><strong>Niet zeker welk materiaal?</strong> Vergelijk sterkte, prijs en vochtbestendigheid.</span>
+          </a>
+        </div>
+      </div>
+      <a class="nav__link" href="#">Meubels</a>
+      <a class="nav__link" href="index.html#ontwerp">AI Ontwerper <span class="nav__new">Nieuw</span></a>
+      <a class="nav__link" href="#">Inspiratie</a>
+      <a class="nav__link" href="#">Advies</a>
+      <a class="nav__link" href="#">Zakelijk</a>
+      <a class="nav__link" href="#">FAQ</a>
+    </nav>
+
+    <div class="header__actions">
+      <a href="#" class="icon-btn" aria-label="Inloggen">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      </a>
+      <a href="shop.html#winkelwagen" class="icon-btn" aria-label="Winkelwagen">
+        <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+        <span class="badge">0</span>
+      </a>
+      <a href="index.html#ontwerp" class="btn btn--primary hide-md">Start ontwerp</a>
+      <button class="icon-btn burger" aria-label="Menu" aria-expanded="false" id="burger">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-nav" id="mobileNav" hidden>
+    <a href="#">Assortiment</a><a href="#">Meubels</a><a href="index.html#ontwerp">AI Ontwerper</a><a href="#">Inspiratie</a>
+    <a href="#">Advies</a><a href="#">Zakelijk</a><a href="#">FAQ</a><a href="#">Contact</a><a href="#">Inloggen</a>
+    <a href="index.html#ontwerp" class="btn btn--primary">Start ontwerp</a>
+  </div>
+</header>
+
+<main id="shop">
+  <div class="container shop-wrap">
+    <!-- Winkelwagen -->
+    <section class="view" data-view="winkelwagen" hidden>
+      <ol class="crumbs"><li class="is-active">Winkelwagen</li><li>Afrekenen</li><li>Klaar</li></ol>
+      <h1 class="shop-title">Je winkelwagen</h1>
+      <div class="shop-grid">
+        <div id="cartItems"></div>
+        <aside class="summary" id="cartSummary"></aside>
+      </div>
+    </section>
+
+    <!-- Afrekenen -->
+    <section class="view" data-view="afrekenen" hidden>
+      <ol class="crumbs"><li class="is-done"><a href="#winkelwagen">Winkelwagen</a></li><li class="is-active">Afrekenen</li><li>Klaar</li></ol>
+      <h1 class="shop-title">Afrekenen</h1>
+      <div class="test-banner"><strong>Testomgeving</strong> · Dit is een testbestelling: er wordt niets afgerekend en er wordt niets gezaagd.</div>
+      <div class="shop-grid">
+        <form class="checkout" id="checkoutForm" novalidate>
+          <fieldset>
+            <legend>Contactgegevens <button type="button" class="link-btn" id="fillTest">Vul testgegevens in</button></legend>
+            <div class="f-row">
+              <label class="field"><span>Voornaam</span><input name="firstName" required autocomplete="given-name"></label>
+              <label class="field"><span>Achternaam</span><input name="lastName" required autocomplete="family-name"></label>
+            </div>
+            <div class="f-row">
+              <label class="field"><span>E-mailadres</span><input name="email" type="email" required autocomplete="email"></label>
+              <label class="field"><span>Telefoon <em>(optioneel)</em></span><input name="phone" type="tel" autocomplete="tel"></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Levering</legend>
+            <div class="options">
+              <label class="option"><input type="radio" name="delivery" value="bezorgen" checked><span><strong>Bezorgen in Nederland</strong><small>Binnen 3-8 werkdagen · gratis vanaf € 295</small></span><em id="shipPrice"></em></label>
+              <label class="option"><input type="radio" name="delivery" value="afhalen"><span><strong>Afhalen in Zoetermeer</strong><small>Edisonstraat 115 · we mailen als het klaarstaat</small></span><em>Gratis</em></label>
+            </div>
+            <div class="address" id="addressFields">
+              <div class="f-row f-row--3">
+                <label class="field"><span>Postcode</span><input name="zip" required autocomplete="postal-code"></label>
+                <label class="field"><span>Huisnummer</span><input name="number" required></label>
+                <label class="field"><span>Toevoeging</span><input name="addition"></label>
+              </div>
+              <div class="f-row">
+                <label class="field"><span>Straat</span><input name="street" required autocomplete="address-line1"></label>
+                <label class="field"><span>Plaats</span><input name="city" required autocomplete="address-level2"></label>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Betaalmethode</legend>
+            <div class="options options--pay">
+              <label class="option"><input type="radio" name="payment" value="iDEAL | Wero" checked><span><strong>iDEAL | Wero</strong></span></label>
+              <label class="option"><input type="radio" name="payment" value="Bancontact"><span><strong>Bancontact</strong></span></label>
+              <label class="option"><input type="radio" name="payment" value="Creditcard"><span><strong>Creditcard</strong></span></label>
+              <label class="option"><input type="radio" name="payment" value="Op rekening"><span><strong>Op rekening</strong><small>Zakelijk, na goedkeuring</small></span></label>
+            </div>
+          </fieldset>
+          <label class="check"><input type="checkbox" name="terms" required> Ik ga akkoord met de algemene voorwaarden en begrijp dat ik losse, gezaagde onderdelen ontvang (geen montage).</label>
+          <p class="form-error" id="formError" hidden></p>
+          <button class="btn btn--primary btn--lg btn--block" id="placeOrder">Plaats testbestelling</button>
+        </form>
+        <aside class="summary" id="checkoutSummary"></aside>
+      </div>
+    </section>
+
+    <!-- Bedankt -->
+    <section class="view" data-view="bedankt" hidden>
+      <canvas id="confetti"></canvas>
+      <div class="thanks" id="thanks"></div>
+    </section>
+
+    <!-- Bouwinstructies -->
+    <section class="view view--full" data-view="instructies" hidden>
+      <div class="manual" id="manual">
+        <div class="manual__bar">
+          <a class="studio__back" id="manualBack" aria-label="Terug"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a>
+          <div class="studio__title"><strong id="manualTitle">Bouwinstructies</strong><span class="studio__status" id="manualSub">Stap-voor-stap in 3D</span></div>
+          <div class="studio__actions">
+            <button class="btn btn--primary btn--sm" id="askToggle"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Vraag de bouwassistent</button>
+          </div>
+        </div>
+        <div class="manual__body">
+          <div class="manual__stage">
+            <div class="manual__viewer" id="manualViewer"></div>
+            <div class="manual__stepnum" id="stepNum"></div>
+            <div class="stage__tools">
+              <button id="mReplay" title="Opnieuw afspelen"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>
+              <button id="mFit" title="Passend in beeld"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+            </div>
+            <div class="manual__loading" id="manualLoading">
+              <span class="spinner"></span>
+              <strong>De AI schrijft jouw bouwinstructies…</strong>
+              <small id="loadingInfo">Onderdelen analyseren</small>
+            </div>
+          </div>
+          <div class="manual__panel">
+            <div class="manual__content" id="stepContent"></div>
+            <div class="manual__nav">
+              <button class="btn btn--outline" id="prevStep">← Vorige</button>
+              <div class="dots" id="stepDots"></div>
+              <button class="btn btn--primary" id="nextStep">Volgende →</button>
+            </div>
+          </div>
+          <aside class="assist" id="assist" hidden>
+            <div class="assist__head"><img src="img/favicon.svg" alt=""><div><strong>Bouwassistent</strong><small id="assistStep">Weet bij welke stap je bent</small></div><button class="icon-btn" id="assistClose" aria-label="Sluiten"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+            <div class="chat__log" id="assistLog"></div>
+            <div class="suggest assist__quick" id="assistQuick"></div>
+            <form class="chat__input" id="assistForm" autocomplete="off">
+              <textarea id="assistInput" rows="1" placeholder="Stel een vraag over deze stap…"></textarea>
+              <button class="promptbar__send" id="assistSend" aria-label="Versturen"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+            </form>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container footer__top">
+    <div class="footer__brand">
+      <img src="img/logo.webp" alt="HoutOpMaatGezaagd.nl" width="400" height="247" class="footer__logo">
+      <p>De specialist in hout op maat gezaagd. Vanuit onze eigen werkplaats in Zoetermeer door heel Nederland en België.</p>
+      <div class="socials">
+        <a href="https://www.facebook.com/pg/Houtopmaatgezaagd/posts/" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M15 3h-2.5A3.5 3.5 0 0 0 9 6.5V9H7v3h2v9h3v-9h2.5l.5-3h-3V7a1 1 0 0 1 1-1h2z"/></svg></a>
+        <a href="https://www.instagram.com/houtopmaatgezaagd" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".5"/></svg></a>
+      </div>
+    </div>
+    <div class="footer__col">
+      <h4>Producten</h4>
+      <a href="#">Assortiment</a><a href="#">Hout laten zagen</a><a href="#">Zakelijk bestellen</a>
+      <a href="#">Meubels op maat</a><a href="#">Zaaglijst samenstellen</a><a href="#">3D Ontwerper</a>
+    </div>
+    <div class="footer__col">
+      <h4>Informatie</h4>
+      <a href="#">DIY Inspiratie</a><a href="#">Advies</a><a href="#">FAQ</a><a href="#">HoutOpMaat als app</a>
+      <a href="#">Koop ongedaan maken</a><a href="#">Over ons</a>
+    </div>
+    <div class="footer__col">
+      <h4>Contact</h4>
+      <a href="tel:0792040222" class="footer__phone">079 - 204 02 22</a>
+      <a href="https://maps.app.goo.gl/6y956QYPy85J6uy89">Edisonstraat 115<br>Zoetermeer</a>
+      <a href="#">Contactformulier</a>
+      <a href="#" class="footer__reviews"><span class="stars">★★★★★</span> Google reviews</a>
+    </div>
+  </div>
+  <div class="container footer__pay">
+    <span>Veilig betalen met</span>
+    <ul><li>iDEAL | Wero</li><li>Bancontact</li><li>Creditcard</li><li>Op rekening*</li></ul>
+    <small>via MultiSafepay · *zakelijk na goedkeuring</small>
+  </div>
+  <div class="footer__bottom">
+    <div class="container footer__bottom-inner">
+      <p>© 2026 HoutOpMaatGezaagd.nl · De Bouwhof B.V. · KvK 27095511 · BTW NL004705397B01</p>
+      <nav><a href="#">Algemene voorwaarden</a><a href="#">Privacybeleid</a><a href="#">Cookie-instellingen</a></nav>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" hidden></div>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script src="main.js"></script>
+<script type="module" src="js/shop.js"></script>
+</body>
+</html>

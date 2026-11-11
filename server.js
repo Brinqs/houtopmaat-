@@ -7,7 +7,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import Anthropic from '@anthropic-ai/sdk';
 import { MATERIALS, PRICING_RULES } from './js/materials.js';
-import { validateDesign, buildSawlist, euro } from './js/sawlist.js';
+import { validateDesign, buildSawlist, euro, partLetters, MATERIAL_BY_SLUG } from './js/sawlist.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT || 5173);
@@ -149,14 +149,15 @@ function toolResultsFor(content) {
 async function runTurn(session, send) {
   // Max 3 modelbeurten per klantbericht (extra beurten alleen om fouten te herstellen).
   for (let round = 0; round < 3; round++) {
+    const tools = session.tools ?? TOOLS;
     const stream = client.beta.messages.stream({
       model: MODEL,
       max_tokens: 32000,
-      system: SYSTEM,
-      tools: TOOLS,
+      system: session.system || SYSTEM,
+      ...(tools.length ? { tools } : {}),
       messages: session.messages,
       thinking: { type: 'adaptive', display: 'summarized' },
-      output_config: { effort: 'medium' },
+      output_config: { effort: session.effort || 'medium' },
       cache_control: { type: 'ephemeral' },
       betas: ['server-side-fallback-2026-07-01'],
       fallbacks: 'default',
@@ -229,7 +230,15 @@ async function handleChat(req, res) {
 
   const sid = /^[a-zA-Z0-9-]{8,64}$/.test(payload.sessionId || '') ? payload.sessionId : crypto.randomUUID();
   let session = sessions.get(sid);
-  if (!session) { session = { messages: [], pendingResults: null }; sessions.set(sid, session); }
+  if (!session) {
+    session = { messages: [], pendingResults: null };
+    if (payload.mode === 'assembly') {
+      const sys = assemblySystem(payload.context);
+      if (!sys) return res.writeHead(400).end('Ongeldige context');
+      Object.assign(session, { system: sys, tools: [], effort: 'low', mode: 'assembly' });
+    }
+    sessions.set(sid, session);
+  }
   session.updatedAt = Date.now();
 
   // Nieuw gesprek met een opgeslagen ontwerp: geef de huidige stand mee als context.
@@ -247,6 +256,7 @@ async function handleChat(req, res) {
   send({ t: 'session', id: sid });
 
   if (!process.env.ANTHROPIC_API_KEY) {
+    if (session.mode === 'assembly') { send({ t: 'text_start' }); send({ t: 'text', d: '*(Demo-modus)* Zonder API-key kan ik geen vragen beantwoorden. Zet ANTHROPIC_API_KEY in .env.' }); send({ t: 'done' }); return res.end(); }
     await runDemoTurn(session, send);
     send({ t: 'done' });
     return res.end();
@@ -269,6 +279,125 @@ async function handleChat(req, res) {
     send({ t: 'error', d: msg });
   }
   res.end();
+}
+
+// ---------------------------------------------------------------------------
+// Bouwinstructies (stap-voor-stap) + bouwassistent
+// ---------------------------------------------------------------------------
+function describeParts(parts) {
+  const { map } = partLetters(parts);
+  return parts.map(p => `- ${map[p.id]} | id=${p.id} | ${p.name} | ${MATERIAL_BY_SLUG[p.mat].name} | ${p.lengthMm}×${p.widthMm}×${p.thickness} mm | positie x=${p.x} y=${p.y} z=${p.z}, maat w=${p.w} h=${p.h} d=${p.d}`).join('\n');
+}
+
+const PLAN_SYSTEM = `Je bent een ervaren meubelmaker die heldere bouwinstructies schrijft in de stijl van een IKEA-boekje, voor klanten van HoutOpMaatGezaagd.nl. De klant ontvangt alleen losse, op maat gezaagde platen; beslag (schroeven, deuvels, scharnieren, ophangbeslag) is NIET meegeleverd.
+
+Maak een logische bouwvolgorde zoals een vakman het zou doen (bijv. eerst de kast liggend opbouwen: bodem en zijwanden, dan tussenschotten en legplanken, top, achterwand om haaks te zetten, plint, als laatste deuren/fronten). Coördinaten: x = breedte, y = hoogte (vloer = 0), z = diepte (achter = 0 → voor).
+
+Regels:
+- 4 tot 10 stappen. Elk onderdeel (id) komt in precies één stap voor.
+- Per stap: korte titel (max 5 woorden), uitleg van 2–4 korte zinnen in je-vorm met de lettercodes (bijv. "Plaats zijwand B tegen bodem A"), concreet over verbindingen (schroeven 4×40 mm voorboren, houtlijm, deuvels), en optioneel een tip.
+- Noem gereedschap en benodigd beslag met aantallen en maten in \`tools\` en \`hardware\`.
+- Roep direct de tool \`assembly_plan\` aan, zonder tekst ervoor.`;
+
+const PLAN_TOOL = {
+  name: 'assembly_plan',
+  description: 'Lever het stap-voor-stap bouwplan.',
+  eager_input_streaming: true,
+  input_schema: {
+    type: 'object',
+    properties: {
+      intro: { type: 'string', description: 'Eén of twee zinnen: wat je gaat bouwen, hoe lang het ongeveer duurt, met hoeveel personen.' },
+      tools: { type: 'array', items: { type: 'string' }, description: 'Gereedschap, bijv. "Accuboormachine", "Houtlijm"' },
+      hardware: { type: 'array', items: { type: 'object', properties: { name: { type: 'string' }, qty: { type: 'number' } }, required: ['name', 'qty'] } },
+      steps: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            title: { type: 'string' },
+            text: { type: 'string' },
+            tip: { type: 'string' },
+            parts: { type: 'array', items: { type: 'string' }, description: 'ids van de onderdelen die in deze stap worden geplaatst' },
+          },
+          required: ['title', 'text', 'parts'],
+        },
+      },
+    },
+    required: ['intro', 'tools', 'hardware', 'steps'],
+  },
+};
+
+function normalizePlan(plan, parts) {
+  const ids = new Set(parts.map(p => p.id)), used = new Set();
+  const steps = (Array.isArray(plan?.steps) ? plan.steps : []).map(st => ({
+    title: String(st?.title || 'Stap').slice(0, 80), text: String(st?.text || '').slice(0, 900), tip: st?.tip ? String(st.tip).slice(0, 400) : '',
+    parts: (Array.isArray(st?.parts) ? st.parts : []).map(String).filter(id => ids.has(id) && !used.has(id) && used.add(id)),
+  })).filter(st => st.parts.length);
+  const rest = parts.filter(p => !used.has(p.id)).map(p => p.id);
+  if (rest.length) steps.push({ title: 'Laatste onderdelen', text: 'Plaats de overgebleven onderdelen zoals in de afbeelding.', tip: '', parts: rest });
+  return {
+    intro: String(plan?.intro || '').slice(0, 600),
+    tools: (Array.isArray(plan?.tools) ? plan.tools : []).map(String).slice(0, 10),
+    hardware: (Array.isArray(plan?.hardware) ? plan.hardware : []).filter(h => h?.name).map(h => ({ name: String(h.name).slice(0, 80), qty: Number(h.qty) || 1 })).slice(0, 12),
+    steps,
+  };
+}
+
+async function handleInstructions(req, res) {
+  let body = '';
+  for await (const chunk of req) { body += chunk; if (body.length > 4e5) return res.writeHead(413).end(); }
+  let payload; try { payload = JSON.parse(body); } catch { return res.writeHead(400).end(); }
+  const v = validateDesign(payload.design);
+  if (!v.ok) return res.writeHead(400).end('Ongeldig ontwerp');
+  res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' });
+  const send = obj => res.write(`data: ${JSON.stringify(obj)}\n\n`);
+  if (!process.env.ANTHROPIC_API_KEY) { send({ t: 'error', d: 'no_key' }); return res.end(); }
+
+  const messages = [{ role: 'user', content: `Meubel: ${v.name}${v.summary ? ` — ${v.summary}` : ''}\n\nOnderdelen (letter | id | naam | materiaal | L×B×D | positie):\n${describeParts(v.parts)}` }];
+  try {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const stream = client.beta.messages.stream({
+        model: MODEL, max_tokens: 32000, system: PLAN_SYSTEM, tools: [PLAN_TOOL], messages,
+        thinking: { type: 'adaptive' }, output_config: { effort: 'low' },
+        betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default',
+      });
+      let final;
+      try {
+        for await (const ev of stream) {
+          if (ev.type === 'content_block_start' && ev.content_block.type === 'tool_use') send({ t: 'tool_start' });
+          if (ev.type === 'content_block_delta' && ev.delta.type === 'input_json_delta') send({ t: 'tool_delta', d: ev.delta.partial_json });
+        }
+        final = await stream.finalMessage();
+      } catch (err) { if (err instanceof Anthropic.APIError) throw err; send({ t: 'retry' }); continue; }
+      const block = final.content.find(b => b.type === 'tool_use' && b.name === 'assembly_plan');
+      if (final.stop_reason === 'refusal' || !block || (final.stop_reason === 'max_tokens')) { send({ t: 'retry' }); continue; }
+      send({ t: 'plan', plan: normalizePlan(block.input, v.parts) });
+      return res.end();
+    }
+    send({ t: 'error', d: 'failed' });
+  } catch (err) {
+    console.error(err);
+    send({ t: 'error', d: err instanceof Anthropic.APIError && /credit balance/i.test(err.message) ? 'credit' : 'failed' });
+  }
+  res.end();
+}
+
+function assemblySystem(ctx) {
+  const v = validateDesign(ctx?.design);
+  if (!v.ok) return null;
+  const plan = normalizePlan(ctx.plan, v.parts);
+  const { map } = partLetters(v.parts);
+  return `Je bent de bouwassistent van HoutOpMaatGezaagd.nl (zagerij in Zoetermeer). De klant heeft een meubel besteld als losse, op maat gezaagde platen en zet het nu zelf in elkaar met de stap-voor-stap 3D-instructies. Help met korte, praktische antwoorden (meestal 2–4 zinnen, je-vorm, Nederlands). Verwijs naar onderdelen met hun lettercode. Denk aan veiligheid (voorboren, met twee personen tillen, hoge kasten aan de muur borgen). Beslag is niet meegeleverd; adviseer gerust maten en aantallen. Bij een probleem met het zaagwerk zelf (verkeerde maat, beschadiging): verwijs naar de klantenservice, 079 - 204 02 22. Elk bericht begint met de stap waar de klant op dat moment is.
+
+Meubel: ${v.name}${v.summary ? ` — ${v.summary}` : ''}
+
+Onderdelen (letter | id | naam | materiaal | L×B×D | positie):
+${describeParts(v.parts)}
+
+Bouwplan:
+${plan.steps.map((st, i) => `Stap ${i + 1}: ${st.title} — onderdelen ${[...new Set(st.parts.map(id => map[id]))].join(', ')}. ${st.text}${st.tip ? ` Tip: ${st.tip}` : ''}`).join('\n')}
+Gereedschap: ${plan.tools.join(', ') || '-'}
+Beslag: ${plan.hardware.map(h => `${h.qty}× ${h.name}`).join(', ') || '-'}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -316,7 +445,7 @@ async function runDemoTurn(session, send) {
 // ---------------------------------------------------------------------------
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml',
   '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.json': 'application/json', '.ico': 'image/x-icon' };
-const PUBLIC = new Set(['index.html', 'styles.css', 'main.js']);
+const PUBLIC = new Set(['index.html', 'shop.html', 'styles.css', 'main.js']);
 
 function serveStatic(req, res) {
   const url = decodeURIComponent(new URL(req.url, 'http://x').pathname);
@@ -330,6 +459,7 @@ function serveStatic(req, res) {
 
 http.createServer((req, res) => {
   if (req.method === 'POST' && req.url === '/api/chat') return handleChat(req, res);
+  if (req.method === 'POST' && req.url === '/api/instructions') return handleInstructions(req, res);
   if (req.method === 'GET' && req.url === '/api/status') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     return res.end(JSON.stringify({ ai: Boolean(process.env.ANTHROPIC_API_KEY), model: MODEL }));
