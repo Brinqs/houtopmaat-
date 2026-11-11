@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hout op maat gezaagd online bestellen | HoutOpMaatGezaagd</title>
+<meta name="description" content="Plaatmateriaal, panelen en zaagwerk op maat. Direct online berekend, tot op de millimeter nauwkeurig gezaagd en geleverd binnen 3-8 werkdagen.">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<div class="topbar">
+  <div class="container topbar__inner">
+    <ul class="usps">
+      <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Tot op <strong>1 mm</strong> nauwkeurig gezaagd</li>
+      <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Levering binnen <strong>3-8 werkdagen</strong></li>
+      <li class="hide-sm"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Gratis bezorgd vanaf <strong>€ 295</strong> (NL) · € 500 (BE)</li>
+    </ul>
+    <div class="topbar__right">
+      <a href="#" class="stars-mini" aria-label="Google reviews">
+        <span class="stars">★★★★★</span> Google reviews
+      </a>
+      <a href="tel:0792040222">079 - 204 02 22</a>
+    </div>
+  </div>
+</div>
+
+<header class="header" id="header">
+  <div class="container header__inner">
+    <a href="#" class="logo" aria-label="HoutOpMaatGezaagd home">
+      <img src="img/logo.webp" alt="HoutOpMaatGezaagd.nl" width="400" height="247">
+    </a>
+
+    <nav class="nav" aria-label="Hoofdmenu">
+      <div class="nav__item has-mega">
+        <button class="nav__link" aria-expanded="false">Assortiment
+          <svg viewBox="0 0 24 24" class="chev"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="mega">
+          <div class="mega__cols">
+            <div>
+              <p class="mega__title">Plaatmateriaal</p>
+              <a href="#">MDF</a><a href="#">Multiplex</a><a href="#">Spaanplaat</a><a href="#">OSB</a><a href="#">Betonplex</a>
+            </div>
+            <div>
+              <p class="mega__title">Massief hout</p>
+              <a href="#">Eiken panelen</a><a href="#">Rubberwood panelen</a><a href="#">Meubelpanelen</a><a href="#">Traptreden</a>
+            </div>
+            <div>
+              <p class="mega__title">Afgewerkt</p>
+              <a href="#">MDF gefineerd</a><a href="#">Gegrond multiplex</a><a href="#">Spaanplaat wit</a><a href="#">Bekijk alles →</a>
+            </div>
+          </div>
+          <a href="#" class="mega__promo">
+            <img src="img/extra.webp" alt="">
+            <span><strong>Niet zeker welk materiaal?</strong> Vergelijk sterkte, prijs en vochtbestendigheid.</span>
+          </a>
+        </div>
+      </div>
+      <a class="nav__link" href="#">Meubels</a>
+      <a class="nav__link" href="#">3D Ontwerper</a>
+      <a class="nav__link" href="#">Inspiratie</a>
+      <a class="nav__link" href="#">Advies</a>
+      <a class="nav__link" href="#">Zakelijk</a>
+      <a class="nav__link" href="#">FAQ</a>
+    </nav>
+
+    <div class="header__actions">
+      <a href="#" class="icon-btn" aria-label="Inloggen">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      </a>
+      <a href="#" class="icon-btn" aria-label="Winkelwagen">
+        <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+        <span class="badge">0</span>
+      </a>
+      <a href="#configurator" class="btn btn--primary hide-md">Start bestelling</a>
+      <button class="icon-btn burger" aria-label="Menu" aria-expanded="false" id="burger">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-nav" id="mobileNav" hidden>
+    <a href="#">Assortiment</a><a href="#">Meubels</a><a href="#">3D Ontwerper</a><a href="#">Inspiratie</a>
+    <a href="#">Advies</a><a href="#">Zakelijk</a><a href="#">FAQ</a><a href="#">Contact</a><a href="#">Inloggen</a>
+    <a href="#configurator" class="btn btn--primary">Start bestelling</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero__bg"><img src="img/hero.webp" alt="Plaatmateriaal wordt op maat gezaagd in onze werkplaats in Zoetermeer"></div>
+  <div class="container hero__inner">
+    <div class="hero__copy">
+      <span class="eyebrow eyebrow--light">Eigen zagerij in Zoetermeer</span>
+      <h1>Hout op maat gezaagd.<br><span>Tot op de millimeter.</span></h1>
+      <p class="lead">Platen, panelen en zaagwerk op maat. Je ziet direct je prijs, wij zagen het in onze eigen werkplaats en je hebt het binnen 3-8 werkdagen thuis.</p>
+      <div class="hero__ctas">
+        <a href="#configurator" class="btn btn--accent btn--lg">Direct op maat laten zagen</a>
+        <a href="#materialen" class="btn btn--ghost-light btn--lg">Bekijk assortiment</a>
+      </div>
+      <ul class="hero__proof">
+        <li><strong>±1 mm</strong><span>zaagnauwkeurigheid</span></li>
+        <li><strong>3-8</strong><span>werkdagen levering</span></li>
+        <li><strong>€ 295</strong><span>gratis bezorging NL</span></li>
+      </ul>
+    </div>
+
+    <!-- Quick configurator -->
+    <form class="quick" id="configurator" autocomplete="off">
+      <div class="quick__head">
+        <h2>Bereken je prijs</h2>
+        <span class="pill">Direct · incl. btw</span>
+      </div>
+
+      <label class="field">
+        <span>Materiaal</span>
+        <select id="qMat">
+          <option value="16.95" data-t="4,6,9,12,15,18,22">Multiplex</option>
+          <option value="9.95" data-t="4,6,9,12,16,18,22,25">MDF</option>
+          <option value="17.95" data-t="9,12,15,18,22">OSB</option>
+          <option value="27.50" data-t="18">Spaanplaat wit</option>
+          <option value="24.95" data-t="9,12,15,18">Populieren multiplex</option>
+          <option value="54.00" data-t="12,19">MDF gefineerd eiken</option>
+          <option value="89.95" data-t="20,30">Rubberwood paneel</option>
+          <option value="199.95" data-t="38">Eiken paneel</option>
+        </select>
+      </label>
+
+      <div class="field-row">
+        <label class="field"><span>Dikte</span><select id="qThick"></select></label>
+        <label class="field"><span>Aantal</span><input id="qQty" type="number" min="1" value="1" inputmode="numeric"></label>
+      </div>
+
+      <div class="field-row">
+        <label class="field"><span>Lengte</span><div class="unit"><input id="qLen" type="number" min="10" max="3050" value="800" inputmode="numeric"><em>mm</em></div></label>
+        <label class="field"><span>Breedte</span><div class="unit"><input id="qWid" type="number" min="10" max="1250" value="400" inputmode="numeric"><em>mm</em></div></label>
+      </div>
+
+      <div class="quick__preview" aria-hidden="true">
+        <div class="board" id="qBoard"><span id="qBoardLabel">800 × 400 mm</span></div>
+      </div>
+
+      <div class="quick__total">
+        <div>
+          <span class="muted">Indicatieprijs</span>
+          <strong id="qPrice">€ 0,00</strong>
+        </div>
+        <button type="submit" class="btn btn--primary">Verder naar zaaglijst →</button>
+      </div>
+      <p class="quick__note">Indicatie op basis van m²-prijs. Zaagkosten en bewerkingen (kantenband, gaten) zie je in de volgende stap.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ TRUST STRIP ============ -->
+<section class="trust">
+  <div class="container trust__inner">
+    <div class="trust__item"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h10"/></svg><span><strong>Gratis zaaglijst</strong> tot 100 onderdelen</span></div>
+    <div class="trust__item"><svg viewBox="0 0 24 24"><path d="M3 7h13v10H3zM16 10h4l1 3v4h-5"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span><strong>Eigen bezorging</strong> door heel NL & BE</span></div>
+    <div class="trust__item"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg><span><strong>iDEAL | Wero</strong>, Bancontact & creditcard</span></div>
+    <div class="trust__item"><svg viewBox="0 0 24 24"><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg><span><strong>Zakelijk</strong> op rekening na goedkeuring</span></div>
+  </div>
+</section>
+
+<!-- ============ ROUTES ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section__head">
+      <span class="eyebrow">Waar ben je mee bezig?</span>
+      <h2>Kies je route</h2>
+    </div>
+    <div class="routes">
+      <a href="#configurator" class="route route--feature">
+        <div class="route__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <h3>Plaatmateriaal op maat</h3>
+        <p>MDF, multiplex, betonplex of meubelpaneel. Voer je maten in en zie direct de prijs.</p>
+        <span class="route__link">Start zaaglijst →</span>
+      </a>
+      <a href="#" class="route">
+        <div class="route__icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 12h16M12 4v16"/></svg></div>
+        <h3>Meubels op maat</h3>
+        <p>Kasten, wandplanken en bureaubladen. Ontwerp in 3D en wij zagen alle onderdelen.</p>
+        <span class="route__link">Naar 3D ontwerper →</span>
+      </a>
+      <a href="#" class="route">
+        <div class="route__icon"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+        <h3>Zakelijk bestellen</h3>
+        <p>Voor interieurbouwers en aannemers: PO-nummer, offertes, bestellijsten en op rekening.</p>
+        <span class="route__link">Zakelijke voordelen →</span>
+      </a>
+    </div>
+    <p class="notice"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>Wij zagen hout op maat en leveren losse, gezaagde onderdelen. Montage op locatie is niet inbegrepen.</p>
+  </div>
+</section>
+
+<!-- ============ MATERIALS ============ -->
+<section class="section section--warm" id="materialen">
+  <div class="container">
+    <div class="section__head section__head--row">
+      <div>
+        <span class="eyebrow">Populair</span>
+        <h2>Onze meest bestelde materialen</h2>
+      </div>
+      <div class="filters" role="tablist">
+        <button class="chip is-active" data-filter="all">Alles</button>
+        <button class="chip" data-filter="plaat">Plaatmateriaal</button>
+        <button class="chip" data-filter="massief">Massief hout</button>
+        <button class="chip" data-filter="afgewerkt">Afgewerkt</button>
+      </div>
+    </div>
+
+    <div class="products" id="products">
+      <a href="#" class="product" data-cat="plaat">
+        <div class="product__img"><img src="img/multiplex.webp" alt="Multiplex 122 x 244" loading="lazy"><span class="tag">Bestseller</span></div>
+        <div class="product__body">
+          <h3>Multiplex</h3>
+          <p class="product__use">Aftimmering, meubels</p>
+          <ul class="product__meta"><li>4 – 22 mm</li><li>122 × 244 cm</li></ul>
+          <div class="product__foot"><span class="price"><small>vanaf</small> € 16,95<small>/m²</small></span><span class="arrow">→</span></div>
+        </div>
+      </a>
+      <a href="#" class="product" data-cat="plaat">
+        <div class="product__img"><img src="img/mdf.webp" alt="MDF 122 x 244" loading="lazy"><span class="tag tag--green">Voordeligst</span></div>
+        <div class="product__body">
+          <h3>MDF</h3>
+          <p class="product__use">Keukens, lijstwerk, badmeubels</p>
+          <ul class="product__meta"><li>4 – 25 mm</li><li>122 × 244 cm</li></ul>
+          <div class="product__foot"><span class="price"><small>vanaf</small> € 9,95<small>/m²</small></span><span class="arrow">→</span></div>
+        </div>
+      </a>
+      <a href="#" class="product" data-cat="massief">
+        <div class="product__img"><img src="img/rubberwood.webp" alt="Panelen Rubberwood" loading="lazy"></div>
+        <div class="product__body">
+          <h3>Rubberwood paneel</h3>
+          <p class="product__use">Traptreden, tafel- en werkbladen</p>
+          <ul class="product__meta"><li>20 / 30 mm</li><li>122 × 305 cm</li></ul>
+          <div class="product__foot"><span class="price"><small>vanaf</small> € 89,95<small>/m²</small></span><span class="arrow">→</span></div>
+        </div>
+      </a>
+      <a href="#" class="product" data-cat="afgewerkt">
+        <div class="product__img"><img src="img/gegrond-populieren.webp" alt="Gegrond populieren multiplex" loading="lazy"></div>
+        <div class="product__body">
+          <h3>Gegrond populieren multiplex</h3>
+          <p class="product__use">Betimmering, interieur</p>
+          <ul class="product__meta"><li>9 – 18 mm</li><li>122 × 244 cm</li></ul>
+          <div class="product__foot"><span class="price"><small>vanaf</small> € 24,95<small>/m²</small></span><span class="arrow">→</span></div>
+        </div>
+      </a>
+      <a href="#" class="product" data-cat="afgewerkt">
+        <div class="product__img"><img src="img/spaanplaat-wit.webp" alt="Spaanplaat wit" loading="lazy"></div>
+        <div class="product__body">
+          <h3>Spaanplaat wit</h3>
+          <p class="product__use">Kasten, kastplanken, meubels</p>
+          <ul class="product__meta"><li>18 mm</li><li>125 × 250 cm</li></ul>
+          <div class="product__foot"><span class="price"><small>vanaf</small> € 27,50<small>/m²</small></span><span class="arrow">→</span></div>
+        </div>
+      </a>
+      <a href="#" class="product" data-cat="plaat">
+        <div class="product__img"><img src="img/osb.webp" alt="OSB" loading="lazy"></div>
+        <div class="product__body">
+          <h3>OSB</h3>
+          <p class="product__use">Dakplaten, zolder, vloerplaten</p>
+          <ul class="product__meta"><li>9 – 22 mm</li><li>122 × 244 cm</li></ul>
+          <div class="product__foot"><span class="price"><small>vanaf</small> € 17,95<small>/m²</small></span><span class="arrow">→</span></div>
+        </div>
+      </a>
+      <a href="#" class="product" data-cat="afgewerkt">
+        <div class="product__img"><img src="img/extra.webp" alt="MDF gefineerd eiken" loading="lazy"></div>
+        <div class="product__body">
+          <h3>MDF gefineerd eiken</h3>
+          <p class="product__use">Kasten, meubels, betimmering</p>
+          <ul class="product__meta"><li>12 – 19 mm</li><li>122 × 244 cm</li></ul>
+          <div class="product__foot"><span class="price"><small>vanaf</small> € 54,00<small>/m²</small></span><span class="arrow">→</span></div>
+        </div>
+      </a>
+      <a href="#" class="product" data-cat="massief">
+        <div class="product__img"><img src="img/eiken-paneel.webp" alt="Eiken paneel 38 mm" loading="lazy"><span class="tag tag--dark">Premium</span></div>
+        <div class="product__body">
+          <h3>Eiken paneel</h3>
+          <p class="product__use">Hoogwaardige meubels, interieur</p>
+          <ul class="product__meta"><li>38 mm</li><li>65 × 300 cm</li></ul>
+          <div class="product__foot"><span class="price"><small>vanaf</small> € 199,95<small>/m²</small></span><span class="arrow">→</span></div>
+        </div>
+      </a>
+    </div>
+    <div class="center"><a href="#" class="btn btn--outline">Bekijk alle materialen</a></div>
+    <p class="fineprint">Prijzen inclusief btw. De prijs voor zagen en bewerkingen zie je bij het samenstellen van je zaaglijst.</p>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="section">
+  <div class="container steps-wrap">
+    <div class="steps-intro">
+      <span class="eyebrow">Zo werkt het</span>
+      <h2>In 3 stappen je hout op maat besteld</h2>
+      <p>Geen gedoe met zelf zagen, geen splinters en geen restafval. Wij zagen alles in onze eigen werkplaats in Zoetermeer.</p>
+      <a href="#configurator" class="btn btn--primary">Begin met stap 1</a>
+    </div>
+    <ol class="steps">
+      <li class="step">
+        <span class="step__num">1</span>
+        <div><h3>Kies je materiaal</h3><p>Selecteer het type hout en de dikte die je nodig hebt. Twijfel je? Gebruik onze materiaalvergelijker.</p></div>
+      </li>
+      <li class="step">
+        <span class="step__num">2</span>
+        <div><h3>Voer je maten in</h3><p>Geef de exacte maten op, tot op de millimeter. Voeg eventueel kantenband of boorgaten toe.</p></div>
+      </li>
+      <li class="step">
+        <span class="step__num">3</span>
+        <div><h3>Bestel &amp; ontvang</h3><p>Reken veilig af en ontvang je gezaagde panelen binnen 3-8 werkdagen. Netjes verpakt en gelabeld.</p></div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ COMPARE ============ -->
+<section class="section section--warm">
+  <div class="container">
+    <div class="section__head">
+      <span class="eyebrow">Materialen vergelijken</span>
+      <h2>Welk materiaal past bij jouw project?</h2>
+      <p class="sub">Een langere balk betekent sterker, makkelijker af te werken, voordeliger of beter bestand tegen vocht.</p>
+    </div>
+    <div class="compare">
+      <div class="cmp">
+        <h3>MDF</h3><p class="cmp__desc">Glad, perfect om te lakken</p>
+        <dl>
+          <dt>Sterkte</dt><dd><i style="--v:3"></i></dd>
+          <dt>Afwerking</dt><dd><i style="--v:5"></i></dd>
+          <dt>Prijs</dt><dd><i style="--v:5"></i></dd>
+          <dt>Vochtbestendig</dt><dd><i style="--v:2"></i></dd>
+        </dl>
+        <p class="cmp__best">Ideaal voor: <strong>gelakte kasten & fronten</strong></p>
+      </div>
+      <div class="cmp cmp--hl">
+        <span class="cmp__badge">Meest veelzijdig</span>
+        <h3>Multiplex</h3><p class="cmp__desc">Sterk en veelzijdig</p>
+        <dl>
+          <dt>Sterkte</dt><dd><i style="--v:5"></i></dd>
+          <dt>Afwerking</dt><dd><i style="--v:3"></i></dd>
+          <dt>Prijs</dt><dd><i style="--v:3"></i></dd>
+          <dt>Vochtbestendig</dt><dd><i style="--v:3"></i></dd>
+        </dl>
+        <p class="cmp__best">Ideaal voor: <strong>constructie & meubels</strong></p>
+      </div>
+      <div class="cmp">
+        <h3>Spaanplaat</h3><p class="cmp__desc">Voordelig, licht</p>
+        <dl>
+          <dt>Sterkte</dt><dd><i style="--v:2"></i></dd>
+          <dt>Afwerking</dt><dd><i style="--v:2"></i></dd>
+          <dt>Prijs</dt><dd><i style="--v:5"></i></dd>
+          <dt>Vochtbestendig</dt><dd><i style="--v:1"></i></dd>
+        </dl>
+        <p class="cmp__best">Ideaal voor: <strong>kastplanken & binnenwerk</strong></p>
+      </div>
+      <div class="cmp">
+        <h3>Rubberwood</h3><p class="cmp__desc">Massief, warme uitstraling</p>
+        <dl>
+          <dt>Sterkte</dt><dd><i style="--v:4"></i></dd>
+          <dt>Afwerking</dt><dd><i style="--v:4"></i></dd>
+          <dt>Prijs</dt><dd><i style="--v:2"></i></dd>
+          <dt>Vochtbestendig</dt><dd><i style="--v:3"></i></dd>
+        </dl>
+        <p class="cmp__best">Ideaal voor: <strong>tafel- & werkbladen</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REVIEWS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section__head section__head--row">
+      <div>
+        <span class="eyebrow">Gebaseerd op Google reviews</span>
+        <h2>Ervaringen van klanten</h2>
+      </div>
+      <div class="g-score">
+        <div><span class="stars">★★★★★</span><small>Score wordt live ingeladen via Google</small></div>
+        <a href="https://www.google.com/search?q=HoutOpMaatGezaagd+reviews" class="btn btn--outline btn--sm" target="_blank" rel="noopener">Bekijk op Google</a>
+      </div>
+    </div>
+    <div class="reviews">
+      <figure class="review">
+        <span class="stars">★★★★★</span>
+        <blockquote>“Voorbeeldreview: maten klopten precies en de platen waren netjes verpakt. Binnen een week geleverd.”</blockquote>
+        <figcaption><span class="avatar">M</span>Voorbeeld klant · <em>Google</em></figcaption>
+      </figure>
+      <figure class="review">
+        <span class="stars">★★★★★</span>
+        <blockquote>“Voorbeeldreview: makkelijk online te bestellen, de prijs zag ik meteen. Kast in één middag in elkaar gezet.”</blockquote>
+        <figcaption><span class="avatar">S</span>Voorbeeld klant · <em>Google</em></figcaption>
+      </figure>
+      <figure class="review">
+        <span class="stars">★★★★★</span>
+        <blockquote>“Voorbeeldreview: als interieurbouwer bestel ik hier vaker. Strak zaagwerk en goed bereikbaar voor vragen.”</blockquote>
+        <figcaption><span class="avatar">R</span>Voorbeeld klant · <em>Google</em></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ZAKELIJK CTA ============ -->
+<section class="section section--tight">
+  <div class="container">
+    <div class="biz">
+      <div class="biz__copy">
+        <span class="eyebrow eyebrow--light">Zakelijk</span>
+        <h2>Grotere zaaglijst of zakelijk bestellen?</h2>
+        <p>Werk met bedrijfsgegevens, facturen, klantreferentie en bestellijsten. Na goedkeuring kun je ook op rekening kopen.</p>
+        <ul class="checks">
+          <li>PO-nummer &amp; klantreferentie per order</li>
+          <li>Offerte op maat voor projecten</li>
+          <li>Zaaglijst uploaden (Excel / CSV)</li>
+        </ul>
+        <div class="hero__ctas">
+          <a href="#" class="btn btn--accent">Zakelijke mogelijkheden</a>
+          <a href="tel:0792040222" class="btn btn--ghost-light">Bel 079 - 204 02 22</a>
+        </div>
+      </div>
+      <div class="biz__img"><img src="img/hero.webp" alt="" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container footer__top">
+    <div class="footer__brand">
+      <img src="img/logo.webp" alt="HoutOpMaatGezaagd.nl" width="400" height="247" class="footer__logo">
+      <p>De specialist in hout op maat gezaagd. Vanuit onze eigen werkplaats in Zoetermeer door heel Nederland en België.</p>
+      <div class="socials">
+        <a href="https://www.facebook.com/pg/Houtopmaatgezaagd/posts/" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M15 3h-2.5A3.5 3.5 0 0 0 9 6.5V9H7v3h2v9h3v-9h2.5l.5-3h-3V7a1 1 0 0 1 1-1h2z"/></svg></a>
+        <a href="https://www.instagram.com/houtopmaatgezaagd" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".5"/></svg></a>
+      </div>
+    </div>
+    <div class="footer__col">
+      <h4>Producten</h4>
+      <a href="#">Assortiment</a><a href="#">Hout laten zagen</a><a href="#">Zakelijk bestellen</a>
+      <a href="#">Meubels op maat</a><a href="#">Zaaglijst samenstellen</a><a href="#">3D Ontwerper</a>
+    </div>
+    <div class="footer__col">
+      <h4>Informatie</h4>
+      <a href="#">DIY Inspiratie</a><a href="#">Advies</a><a href="#">FAQ</a><a href="#">HoutOpMaat als app</a>
+      <a href="#">Koop ongedaan maken</a><a href="#">Over ons</a>
+    </div>
+    <div class="footer__col">
+      <h4>Contact</h4>
+      <a href="tel:0792040222" class="footer__phone">079 - 204 02 22</a>
+      <a href="https://maps.app.goo.gl/6y956QYPy85J6uy89">Edisonstraat 115<br>Zoetermeer</a>
+      <a href="#">Contactformulier</a>
+      <a href="#" class="footer__reviews"><span class="stars">★★★★★</span> Google reviews</a>
+    </div>
+  </div>
+  <div class="container footer__pay">
+    <span>Veilig betalen met</span>
+    <ul><li>iDEAL | Wero</li><li>Bancontact</li><li>Creditcard</li><li>Op rekening*</li></ul>
+    <small>via MultiSafepay · *zakelijk na goedkeuring</small>
+  </div>
+  <div class="footer__bottom">
+    <div class="container footer__bottom-inner">
+      <p>© 2026 HoutOpMaatGezaagd.nl · De Bouwhof B.V. · KvK 27095511 · BTW NL004705397B01</p>
+      <nav><a href="#">Algemene voorwaarden</a><a href="#">Privacybeleid</a><a href="#">Cookie-instellingen</a></nav>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

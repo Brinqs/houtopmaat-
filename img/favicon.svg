@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="HoutOpMaatGezaagd">
+  <rect width="256" height="256" rx="56" fill="#BD5C17"/>
+  <path fill="#111827" d="M128 18 161 31 186 19 204 46 235 54 230 87 249 112 224 135 224 168 192 177 175 206 143 196 115 214 88 194 55 202 40 172 8 160 13 128 7 96 39 84 54 54 87 62 114 42Z" opacity=".95"/>
+  <circle cx="128" cy="128" r="74" fill="#fff"/>
+  <path fill="#BD5C17" d="M77 76h34v37h34V76h34v104h-34v-38h-34v38H77z"/>
+</svg>
