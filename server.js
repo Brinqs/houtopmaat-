@@ -264,6 +264,7 @@ async function handleChat(req, res) {
     if (err instanceof Anthropic.AuthenticationError) msg = 'De API-key ontbreekt of is ongeldig. Zet ANTHROPIC_API_KEY in het .env-bestand en herstart de server.';
     else if (err instanceof Anthropic.RateLimitError) msg = 'Het is even druk bij de AI. Probeer het over een minuutje opnieuw.';
     else if (err instanceof Anthropic.APIConnectionError) msg = 'Geen verbinding met de AI-dienst. Controleer de internetverbinding.';
+    else if (err instanceof Anthropic.APIError && /credit balance/i.test(err.message)) msg = 'Het API-tegoed van dit Anthropic-account is op. Vul tegoed aan via console.anthropic.com → Plans & Billing en probeer het opnieuw.';
     else if (err instanceof Anthropic.APIError && err.status === 400) msg = `De AI weigerde het verzoek (400): ${err.message}`;
     send({ t: 'error', d: msg });
   }
