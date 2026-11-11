@@ -63,7 +63,7 @@
         </div>
       </div>
       <a class="nav__link" href="#">Meubels</a>
-      <a class="nav__link" href="#">3D Ontwerper</a>
+      <a class="nav__link" href="#hero" data-open-designer>AI Ontwerper <span class="nav__new">Nieuw</span></a>
       <a class="nav__link" href="#">Inspiratie</a>
       <a class="nav__link" href="#">Advies</a>
       <a class="nav__link" href="#">Zakelijk</a>
@@ -78,7 +78,7 @@
         <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
         <span class="badge">0</span>
       </a>
-      <a href="#configurator" class="btn btn--primary hide-md">Start bestelling</a>
+      <a href="#hero" class="btn btn--primary hide-md" data-open-designer>Start ontwerp</a>
       <button class="icon-btn burger" aria-label="Menu" aria-expanded="false" id="burger">
         <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
@@ -86,77 +86,130 @@
   </div>
 
   <div class="mobile-nav" id="mobileNav" hidden>
-    <a href="#">Assortiment</a><a href="#">Meubels</a><a href="#">3D Ontwerper</a><a href="#">Inspiratie</a>
+    <a href="#">Assortiment</a><a href="#">Meubels</a><a href="#hero" data-open-designer>AI Ontwerper</a><a href="#">Inspiratie</a>
     <a href="#">Advies</a><a href="#">Zakelijk</a><a href="#">FAQ</a><a href="#">Contact</a><a href="#">Inloggen</a>
-    <a href="#configurator" class="btn btn--primary">Start bestelling</a>
+    <a href="#hero" class="btn btn--primary" data-open-designer>Start ontwerp</a>
   </div>
 </header>
 
 <main>
 
-<!-- ============ HERO ============ -->
-<section class="hero">
-  <div class="hero__bg"><img src="img/hero.webp" alt="Plaatmateriaal wordt op maat gezaagd in onze werkplaats in Zoetermeer"></div>
-  <div class="container hero__inner">
-    <div class="hero__copy">
-      <span class="eyebrow eyebrow--light">Eigen zagerij in Zoetermeer</span>
-      <h1>Hout op maat gezaagd.<br><span>Tot op de millimeter.</span></h1>
-      <p class="lead">Platen, panelen en zaagwerk op maat. Je ziet direct je prijs, wij zagen het in onze eigen werkplaats en je hebt het binnen 3-8 werkdagen thuis.</p>
-      <div class="hero__ctas">
-        <a href="#configurator" class="btn btn--accent btn--lg">Direct op maat laten zagen</a>
-        <a href="#materialen" class="btn btn--ghost-light btn--lg">Bekijk assortiment</a>
+<!-- ============ HERO: AI-ONTWERPER ============ -->
+<section class="hero hero--ai" id="hero">
+  <div class="hero__bg"><img src="img/hero.webp" alt=""></div>
+  <div class="container hero-ai">
+    <div class="hero-ai__copy">
+      <span class="ai-badge"><span class="ai-badge__spark">✦</span> Nieuw · AI-meubelontwerper</span>
+      <h1>Ontwerp je eigen meubel.<br><span>Gewoon door te typen.</span></h1>
+      <p class="lead">Vertel wat je wilt maken. Onze AI stelt de juiste vragen, bouwt live je 3D-model en rekent direct je zaaglijst uit met echte prijzen. Wij zagen alles tot op de millimeter.</p>
+
+      <form class="promptbar" id="heroPrompt" autocomplete="off">
+        <label for="heroInput" class="promptbar__label">Wat wil je ontwerpen?</label>
+        <div class="promptbar__box">
+          <textarea id="heroInput" rows="1" placeholder="Bijv. een boekenkast van 2 meter hoog"></textarea>
+          <button type="submit" class="promptbar__send" aria-label="Start met ontwerpen">
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </form>
+      <div class="prompt-chips">
+        <span>Probeer:</span>
+        <button type="button" class="chip chip--glass" data-prompt="Ik wil een boekenkast van ongeveer 2 meter hoog voor in de woonkamer">Boekenkast</button>
+        <button type="button" class="chip chip--glass" data-prompt="Ik zoek een tv-meubel van zo'n 180 cm breed met open vakken">Tv-meubel</button>
+        <button type="button" class="chip chip--glass" data-prompt="Ik wil een bureau voor mijn thuiswerkplek">Bureau</button>
+        <button type="button" class="chip chip--glass" data-prompt="Ik heb een schoenenkast nodig voor in een smalle gang">Schoenenkast</button>
       </div>
-      <ul class="hero__proof">
-        <li><strong>±1 mm</strong><span>zaagnauwkeurigheid</span></li>
-        <li><strong>3-8</strong><span>werkdagen levering</span></li>
-        <li><strong>€ 295</strong><span>gratis bezorging NL</span></li>
+      <ul class="hero-ai__proof">
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Gratis ontwerpen</li>
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Echte prijzen, direct</li>
+        <li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Gezaagd in 3-8 werkdagen</li>
       </ul>
     </div>
 
-    <!-- Quick configurator -->
-    <form class="quick" id="configurator" autocomplete="off">
-      <div class="quick__head">
-        <h2>Bereken je prijs</h2>
-        <span class="pill">Direct · incl. btw</span>
-      </div>
-
-      <label class="field">
-        <span>Materiaal</span>
-        <select id="qMat">
-          <option value="16.95" data-t="4,6,9,12,15,18,22">Multiplex</option>
-          <option value="9.95" data-t="4,6,9,12,16,18,22,25">MDF</option>
-          <option value="17.95" data-t="9,12,15,18,22">OSB</option>
-          <option value="27.50" data-t="18">Spaanplaat wit</option>
-          <option value="24.95" data-t="9,12,15,18">Populieren multiplex</option>
-          <option value="54.00" data-t="12,19">MDF gefineerd eiken</option>
-          <option value="89.95" data-t="20,30">Rubberwood paneel</option>
-          <option value="199.95" data-t="38">Eiken paneel</option>
-        </select>
-      </label>
-
-      <div class="field-row">
-        <label class="field"><span>Dikte</span><select id="qThick"></select></label>
-        <label class="field"><span>Aantal</span><input id="qQty" type="number" min="1" value="1" inputmode="numeric"></label>
-      </div>
-
-      <div class="field-row">
-        <label class="field"><span>Lengte</span><div class="unit"><input id="qLen" type="number" min="10" max="3050" value="800" inputmode="numeric"><em>mm</em></div></label>
-        <label class="field"><span>Breedte</span><div class="unit"><input id="qWid" type="number" min="10" max="1250" value="400" inputmode="numeric"><em>mm</em></div></label>
-      </div>
-
-      <div class="quick__preview" aria-hidden="true">
-        <div class="board" id="qBoard"><span id="qBoardLabel">800 × 400 mm</span></div>
-      </div>
-
-      <div class="quick__total">
-        <div>
-          <span class="muted">Indicatieprijs</span>
-          <strong id="qPrice">€ 0,00</strong>
+    <div class="hero-ai__visual" aria-hidden="true">
+      <div class="demo-card">
+        <div class="demo-card__bar"><span class="live-dot"></span>AI bouwt: <strong>Boekenkast Noor</strong></div>
+        <div class="demo-viewer" id="demoViewer"></div>
+        <div class="demo-card__foot">
+          <div><small>Zaaglijst</small><span id="demoCount">12 onderdelen</span></div>
+          <div class="demo-card__price"><small>Totaal incl. btw</small><strong id="demoPrice">€ 0,00</strong></div>
         </div>
-        <button type="submit" class="btn btn--primary">Verder naar zaaglijst →</button>
       </div>
-      <p class="quick__note">Indicatie op basis van m²-prijs. Zaagkosten en bewerkingen (kantenband, gaten) zie je in de volgende stap.</p>
-    </form>
+      <div class="float-bubble float-bubble--q"><img src="img/favicon.svg" alt="">Hoeveel ruimte heb je in de hoogte?</div>
+      <div class="float-bubble float-bubble--a">Tot het plafond, 2,40 m</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STUDIO (verschijnt na eerste prompt) ============ -->
+<section class="studio" id="studio" hidden data-pane="chat">
+  <div class="studio__bar">
+    <button class="studio__back" id="studioBack" aria-label="Terug"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="studio__title">
+      <strong id="designName">Nieuw ontwerp</strong>
+      <span class="studio__status"><span class="live-dot"></span><span id="designStatus">Wacht op je input</span></span>
+    </div>
+    <div class="studio__actions">
+      <div class="mydesigns-wrap">
+        <button class="btn btn--ghost btn--sm" data-action="mydesigns"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="hide-md">Mijn ontwerpen</span></button>
+        <div class="popover" id="myDesigns" hidden><p class="popover__title">Mijn ontwerpen</p><div id="myDesignsList"></div></div>
+      </div>
+      <div class="studio__total hide-md"><small>Totaal incl. btw</small><strong id="barTotal">€ 0,00</strong></div>
+      <button class="btn btn--outline btn--sm" data-action="save"><svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>Opslaan</button>
+      <button class="btn btn--primary btn--sm" data-action="order"><svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>Bestellen</button>
+    </div>
+  </div>
+  <div class="ai-notice" id="aiNotice" hidden><strong>Demo-modus:</strong> de AI is nog niet gekoppeld, je ziet een vast voorbeeldscenario. Zet <code>ANTHROPIC_API_KEY</code> in <code>.env</code> om met Claude te ontwerpen.</div>
+
+  <nav class="studio__tabs">
+    <button data-pane="chat" class="is-active">Chat</button>
+    <button data-pane="model">3D-model</button>
+    <button data-pane="sawlist">Zaaglijst</button>
+  </nav>
+
+  <div class="studio__grid">
+    <aside class="chat pane pane--chat">
+      <div class="chat__log" id="chatLog"></div>
+      <form class="chat__input" id="chatForm" autocomplete="off">
+        <textarea id="chatInput" rows="1" placeholder="Typ je antwoord of een wijziging…"></textarea>
+        <button id="chatSend" class="promptbar__send" aria-label="Versturen"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </form>
+    </aside>
+
+    <div class="stage pane pane--model">
+      <div class="stage__viewer" id="studioViewer"></div>
+      <div class="stage__empty" id="stageEmpty">
+        <svg viewBox="0 0 24 24"><path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>
+        <p>Je 3D-model verschijnt hier<br><small>De AI bouwt het live op terwijl jullie praten</small></p>
+      </div>
+      <div class="stage__building" id="stageBuilding" hidden><span class="spinner"></span>AI bouwt model · <span id="buildCount">0</span> onderdelen</div>
+      <div class="stage__tools">
+        <button id="btnFit" title="Passend in beeld"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+        <button id="btnExplode" title="Uit elkaar (exploded view)"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="6" height="6"/><path d="M4 4l3 3M20 4l-3 3M4 20l3-3M20 20l-3-3"/></svg></button>
+        <button id="btnDims" class="is-active" title="Maten tonen"><svg viewBox="0 0 24 24"><path d="M3 17h18M3 14v6M21 14v6M7 17v-2M11 17v-3M15 17v-2"/></svg></button>
+      </div>
+      <div class="stage__legend" id="legend"></div>
+      <div class="stage__tip" id="partTip" hidden></div>
+    </div>
+
+    <aside class="sawlist pane pane--sawlist">
+      <div class="sawlist__head"><div><h3>Zaaglijst</h3><small id="sawCount">0 onderdelen</small></div><span class="pill">Echte prijzen</span></div>
+      <div class="sawlist__body" id="sawlistBody"></div>
+      <div class="sawlist__foot">
+        <div class="saw-totals" id="sawTotals"></div>
+        <div class="sawlist__cta">
+          <button class="btn btn--outline" data-action="save">Opslaan</button>
+          <button class="btn btn--primary" data-action="order">Bestel zaagwerk</button>
+        </div>
+        <p class="fineprint-sm">Je ontvangt losse, op maat gezaagde onderdelen. Zagen is inbegrepen; montage niet.</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="studio__mobilebar">
+    <div><small>Totaal incl. btw</small><strong id="mobileTotal">€ 0,00</strong></div>
+    <button class="btn btn--outline btn--sm" data-action="save">Opslaan</button>
+    <button class="btn btn--primary btn--sm" data-action="order">Bestellen</button>
   </div>
 </section>
 
@@ -178,17 +231,17 @@
       <h2>Kies je route</h2>
     </div>
     <div class="routes">
-      <a href="#configurator" class="route route--feature">
+      <a href="#" class="route">
         <div class="route__icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
         <h3>Plaatmateriaal op maat</h3>
         <p>MDF, multiplex, betonplex of meubelpaneel. Voer je maten in en zie direct de prijs.</p>
         <span class="route__link">Start zaaglijst →</span>
       </a>
-      <a href="#" class="route">
-        <div class="route__icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 12h16M12 4v16"/></svg></div>
-        <h3>Meubels op maat</h3>
-        <p>Kasten, wandplanken en bureaubladen. Ontwerp in 3D en wij zagen alle onderdelen.</p>
-        <span class="route__link">Naar 3D ontwerper →</span>
+      <a href="#hero" class="route route--feature" data-open-designer>
+        <div class="route__icon"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg></div>
+        <h3>Meubel ontwerpen met AI</h3>
+        <p>Beschrijf je kast, bureau of tv-meubel. De AI ontwerpt het in 3D en maakt je zaaglijst.</p>
+        <span class="route__link">Start met typen →</span>
       </a>
       <a href="#" class="route">
         <div class="route__icon"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
@@ -303,7 +356,7 @@
       <span class="eyebrow">Zo werkt het</span>
       <h2>In 3 stappen je hout op maat besteld</h2>
       <p>Geen gedoe met zelf zagen, geen splinters en geen restafval. Wij zagen alles in onze eigen werkplaats in Zoetermeer.</p>
-      <a href="#configurator" class="btn btn--primary">Begin met stap 1</a>
+      <a href="#hero" class="btn btn--primary" data-open-designer>Begin met ontwerpen</a>
     </div>
     <ol class="steps">
       <li class="step">
@@ -476,6 +529,31 @@
   </div>
 </footer>
 
+<!-- Bestel-popup -->
+<div class="modal" id="orderModal" hidden>
+  <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
+    <button class="modal__close" id="orderClose" aria-label="Sluiten"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <span class="eyebrow">Jouw zaaglijst</span>
+    <h2 id="orderTitle">Ontwerp</h2>
+    <p class="muted" id="orderSummary"></p>
+    <div class="order-table"><table><thead><tr><th>Aantal</th><th>Onderdeel</th><th>Maat (mm)</th><th>Prijs</th></tr></thead><tbody id="orderLines"></tbody></table></div>
+    <div class="saw-totals" id="orderTotals"></div>
+    <div class="modal__actions">
+      <button class="btn btn--outline" data-action="save">Ontwerp opslaan</button>
+      <button class="btn btn--primary" id="orderAdd">In winkelwagen</button>
+    </div>
+    <p class="fineprint-sm">Gezaagd in Zoetermeer · levering binnen 3-8 werkdagen · betalen met iDEAL | Wero, Bancontact of creditcard.</p>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
 <script src="main.js"></script>
+<script type="module" src="js/designer.js"></script>
 </body>
 </html>
