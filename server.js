@@ -26,11 +26,15 @@ const client = new Anthropic(); // leest ANTHROPIC_API_KEY
 // ---------------------------------------------------------------------------
 // Prompt + tools
 // ---------------------------------------------------------------------------
-const materialTable = MATERIALS.map(m =>
-  `- ${m.slug}: ${m.name} — ${Object.entries(m.prices).map(([t, p]) => `${t} mm €${p}/m²`).join(', ')} — max ${m.maxLengthCm * 10}×${m.maxWidthCm * 10} mm — ${m.use}`
-).join('\n');
+// Per materiaal: per dikte de (max. 2) goedkoopste plaatformaten met plaatprijs.
+const materialTable = MATERIALS.map(m => {
+  const byT = {};
+  m.plates.forEach(p => (byT[p.t] ||= []).push(p));
+  const opts = Object.entries(byT).map(([t, ps]) => `${t} mm: ${ps.sort((a, b) => a.price - b.price).slice(0, 2).map(p => `${p.l}×${p.w} €${p.price.toFixed(2)}`).join(' / ')}`).join('; ');
+  return `- ${m.slug}: ${m.name}${m.grain ? ' (nerf in lengterichting)' : ''} — ${m.use} — ${opts}`;
+}).join('\n');
 
-const SYSTEM = `Je bent de AI-meubelontwerper van Adzaagt.nl, een zagerij in Heemskerk met een modern machinepark die plaatmateriaal tot op de millimeter op maat zaagt en losse onderdelen levert (geen montage). Je helpt particulieren en vakmensen om in een gesprek een meubel te ontwerpen dat zij daarna als zaaglijst bestellen.
+const SYSTEM = `Je bent de AI-meubelontwerper van Adzaagt.nl (\"Ad\"), een online zaagservice in Heemskerk met een modern, computergestuurd machinepark. Adzaagt zaagt plaatmateriaal tot op de millimeter nauwkeurig op maat, voor particulieren en bedrijven, en levert losse onderdelen (geen montage). Motto's: deskundig advies van Ad, maatwerk voor particulieren en bedrijven, plaatmateriaal nauwkeurig op maat. Je helpt particulieren en vakmensen om in een gesprek een meubel te ontwerpen dat zij daarna als zaaglijst bestellen.
 
 ## Hoe je werkt
 - Spreek Nederlands, je-vorm, warm en deskundig. Houd berichten kort (meestal 2–5 zinnen); geen kopjes.
@@ -48,7 +52,7 @@ const SYSTEM = `Je bent de AI-meubelontwerper van Adzaagt.nl, een zagerij in Hee
 Elk onderdeel is een rechthoekig blok, assen-uitgelijnd, in millimeters:
 - x = breedte (links → rechts), y = hoogte (vloer = 0 → omhoog), z = diepte (achterkant/muur = 0 → voorkant).
 - x, y, z is de hoek met de laagste waarden; w, h, d zijn de afmetingen langs x, y, z.
-- De kleinste van w/h/d is de plaatdikte en MOET een leverbare dikte van het gekozen materiaal zijn. De andere twee maten moeten binnen de maximale plaatmaat vallen.
+- De kleinste van w/h/d is de plaatdikte en MOET een leverbare dikte van het gekozen materiaal zijn. De andere twee maten moeten op een leverbaar plaatformaat passen (bij materialen met nerf loopt de lengte van het onderdeel mee met de plaatlengte).
 - Onderdelen mogen elkaar raken maar niet overlappen. Denk als een meubelmaker:
   - Zijwanden over de volle hoogte; bodem, top en legplanken ertussen (breedte = binnenmaat).
   - Achterwand van 3 mm hardboard/HDF tegen de achterkant (z = 0), de kast staat dan op z = 3 en verder.
@@ -58,14 +62,16 @@ Elk onderdeel is een rechthoekig blok, assen-uitgelijnd, in millimeters:
 - Gebruik maximaal ~60 onderdelen; laat beslag (scharnieren, rails, schroeven) weg.
 - Geef onderdelen duidelijke Nederlandse namen ("Zijwand links", "Legplank 2", "Deur rechts").
 
-## Leverbare materialen (slug: naam — dikte en prijs per m² incl. btw — max plaatmaat — toepassing)
+## Assortiment Adzaagt (slug: naam — toepassing — per dikte: plaatformaat in mm en prijs per hele plaat incl. btw)
 ${materialTable}
 
-## Prijsregels van de zagerij
-- Prijs = oppervlak × m²-prijs van de dikte. Zagen is inbegrepen.
-- Minimaal € ${PRICING_RULES.minimumPricePerPiece.toFixed(2)} per onderdeel.
-- Onderdelen langer dan ${PRICING_RULES.chargeFullLengthFromCm * 10} mm worden met de volle plaatlengte gerekend, breder dan ${PRICING_RULES.chargeFullWidthFromCm * 10} mm met de volle plaatbreedte.
-- Verzending NL € ${PRICING_RULES.shippingCostNL}, gratis vanaf € ${PRICING_RULES.freeShippingFromNL}. Levering 3–8 werkdagen.`;
+## Prijs en levering (zoals op adzaagt.nl)
+- De klant koopt HELE platen; Ad zaagt daaruit tot op de millimeter nauwkeurig de onderdelen. De prijs is dus het aantal benodigde platen × plaatprijs. Het systeem deelt de onderdelen automatisch in op de goedkoopste plaatformaten.
+- Kies daarom slim: onderdelen in hetzelfde materiaal en dezelfde dikte delen platen. Een ander materiaal of een andere dikte voor één klein onderdeel kost vaak een extra hele plaat; benoem dat als het scheelt. Hoge benutting = voordeliger.
+- Reststukken krijgt de klant op verzoek mee; anders krijgen ze een tweede leven bij het Hout- en Meubileringscollege.
+- Extra bewerkingen zoals kantenband (ABS), verstek, verjongen, afronden en CNC-boringen (bijv. Blum-scharnieren, ladegeleiders) zijn mogelijk via Ad; die staan niet in deze zaaglijst, de prijs volgt na controle.
+- Bezorgen met de eigen transportbus van Adzaagt: € ${PRICING_RULES.shippingNL.toFixed(2)} per bestelling in Nederland (niet op de Waddeneilanden, niet in België). Track & trace via Routigo, levering tot achter de eerste deur. Afhalen in Heemskerk is gratis. Levertijd verschilt per product, meestal 10–15 werkdagen.
+- Betalen kan met iDEAL, Bancontact, PayPal of overboeking (geen kopen op rekening).`;
 
 const TOOLS = [
   {
@@ -131,9 +137,10 @@ function toolResultsFor(content) {
         continue;
       }
       const s = buildSawlist(v.parts);
-      let text = `Getoond aan de klant: ${v.parts.length} onderdelen, ${s.lines.length} zaaglijstregels. ` +
-        `Materiaal ${euro(s.subtotal)}${s.discount ? `, staffelkorting −${euro(s.discount)}` : ''}, ` +
-        `verzending ${s.shipping ? euro(s.shipping) : 'gratis'}, totaal ${euro(s.total)} incl. btw.`;
+      let text = `Getoond aan de klant: ${v.parts.length} onderdelen. Plaatindeling:\n` +
+        s.sheets.map(sh => sh.error ? `- ${sh.name} ${sh.thickness} mm: ${sh.error}` :
+          `- ${sh.name} ${sh.thickness} mm: ${sh.count}× plaat ${sh.plate.l}×${sh.plate.w} à ${euro(sh.plate.price)} = ${euro(sh.cost)} (${Math.round(sh.utilization * 100)}% benut)`).join('\n') +
+        `\nPlaten ${euro(s.subtotal)} + bezorgen ${euro(s.shipping)} = ${euro(s.total)} incl. btw (afhalen in Heemskerk gratis).`;
       if (v.warnings.length) text += `\nWaarschuwingen (los op in je volgende update):\n- ${v.warnings.join('\n- ')}`;
       results.push({ type: 'tool_result', tool_use_id: block.id, content: text });
     } else if (block.name === 'suggest_replies') {
@@ -405,7 +412,7 @@ Beslag: ${plan.hardware.map(h => `${h.qty}× ${h.name}`).join(', ') || '-'}`;
 // ---------------------------------------------------------------------------
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 function demoDesign(round) {
-  const E = 'meubelpaneel-licht-eiken', H = 'hardboard', W = round > 0 ? 'mdf-wit-gegrond' : E;
+  const E = 'berken-multiplex', H = 'hardboard', W = round > 0 ? 'mdf-gegrond' : E;
   const width = round > 0 ? 1000 : 800, inner = width - 36, shelves = round > 0 ? [430, 790, 1140, 1480, 1800] : [430, 790, 1140, 1480];
   const height = round > 0 ? 2100 : 1800;
   const parts = [
@@ -424,7 +431,7 @@ function demoDesign(round) {
 async function runDemoTurn(session, send) {
   const round = session.demoRound = (session.demoRound ?? -1) + 1;
   const say = round === 0
-    ? '*(Demo-modus: er is nog geen API-key gekoppeld.)* Leuk project! Ik heb alvast een eerste opzet gemaakt: een boekenkast van **80 cm breed en 1,80 m hoog** in licht eiken, met een dichte onderkast. Hoeveel ruimte heb je in de breedte en hoogte?'
+    ? '*(Demo-modus: er is nog geen API-key gekoppeld.)* Leuk project! Ik heb alvast een eerste opzet gemaakt: een boekenkast van **80 cm breed en 1,80 m hoog** in berken multiplex, met een dichte onderkast. Hoeveel ruimte heb je in de breedte en hoogte?'
     : '*(Demo-modus)* Ik heb de kast verbreed naar **1 meter** en verhoogd naar **2,10 m**, met een extra legplank en witte deurtjes voor wat contrast. Zo goed?';
   send({ t: 'thinking_start' });
   for (const w of 'De klant wil een kast; ik begin met een standaardopzet en vraag daarna naar de maten.'.split(' ')) { send({ t: 'thinking', d: w + ' ' }); await sleep(40); }
@@ -450,7 +457,7 @@ const PUBLIC = new Set(['index.html', 'shop.html', 'styles.css', 'main.js']);
 function serveStatic(req, res) {
   const url = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   const rel = url === '/' ? 'index.html' : url.replace(/^\/+/, '');
-  const ok = PUBLIC.has(rel) || /^(js|img)\/[\w.-]+$/.test(rel);
+  const ok = PUBLIC.has(rel) || (/^(js|img)(\/[\w-][\w.-]*)+$/.test(rel) && !rel.includes('..'));
   const file = path.join(ROOT, rel);
   if (!ok || !file.startsWith(ROOT) || !fs.existsSync(file)) return res.writeHead(404).end('Niet gevonden');
   res.writeHead(200, { 'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });

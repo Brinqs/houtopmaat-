@@ -4,7 +4,7 @@ Vernieuwde homepage (header, home en footer) voor adzaagt.nl (logo, kleuren en b
 **AI-meubelontwerper**: de bezoeker typt wat hij wil maken, Claude stelt gerichte vragen, bouwt live
 een 3D-model en de zaaglijst rekent direct met echte prijzen.
 
-> Let op: materialen, prijzen, prijsregels en verzendvoorwaarden komen nog uit de catalogus van houtopmaatgezaagd.nl (eerste versie van dit voorstel). Vervang `js/materials.js` door het assortiment van Adzaagt voordat dit live gaat.
+> Assortiment, plaatprijzen, levering (€ 69,95, eigen transportbus, afhalen in Heemskerk), betaalmethoden en claims komen van adzaagt.nl (november 2026).
 
 ## Starten
 
@@ -20,11 +20,11 @@ Zonder API-key draait de ontwerper in **demo-modus**: een vast voorbeeldscenario
 
 - `server.js`: Node-server; serveert de site en `/api/chat` (Claude via `@anthropic-ai/sdk`, streaming).
   De API-key blijft op de server. Gesprekken worden in het geheugen bewaard (demo).
-- `js/materials.js`: materialen, prijzen per dikte en prijsregels, opgehaald uit de publieke catalogus-API
-  van houtopmaatgezaagd.nl (`/api/catalog/materials`, `/api/public/settings`).
-- `js/sawlist.js`: ontwerp valideren en zaaglijst + prijs berekenen (gedeeld door server en browser):
-  m²-prijs per dikte, minimaal € 2,50 per onderdeel, volle plaatlengte boven 200 cm, volle plaatbreedte boven 100 cm,
-  staffelkorting per materiaal, verzending € 29,95 onder € 295.
+- `js/materials.js`: 18 materialen uit het assortiment van adzaagt.nl met alle plaatformaten en prijzen per hele plaat
+  (opgehaald van hun productpagina's), plus levering en minimale orderwaarde.
+- `js/sawlist.js`: ontwerp valideren en onderdelen indelen op hele platen (strokenmethode zoals een paneelzaag,
+  4 mm zaagsnede aangenomen, nerf in lengterichting). Per materiaal en dikte wordt het goedkoopste plaatformaat gekozen;
+  prijs = aantal platen × plaatprijs, plus € 69,95 bezorgen (afhalen gratis). Toont ook het zaagplan per plaat.
 - `js/viewer.js`: 3D-viewer (Three.js): onderdelen bouwen live op, maatvoering, exploded view, hover-koppeling met de zaaglijst.
 - `js/designer.js`: hero-promptbar, studio (chat · 3D · zaaglijst), opslaan (localStorage) en in winkelwagen.
 - `shop.html` + `js/shop.js`: winkelwagen → afrekenen (testbestelling, niets wordt afgerekend) → bedankpagina →

@@ -1,6 +1,6 @@
 // AI-meubelontwerper: hero-promptbar, studio (chat + 3D + zaaglijst), opslaan en bestellen.
 import { Viewer } from './viewer.js';
-import { validateDesign, buildSawlist, euro, MATERIAL_BY_SLUG } from './sawlist.js';
+import { validateDesign, buildSawlist, euro, MATERIAL_BY_SLUG, plateSvg } from './sawlist.js';
 import { addToCart as storeAdd, updateBadges } from './store.js';
 
 const $ = s => document.querySelector(s);
@@ -10,7 +10,7 @@ const STORE_KEY = 'hom_designs_v1';
 // ---------------------------------------------------------------------------
 // Demo-ontwerp voor de hero (boekenkast, licht eiken + witte deurtjes)
 // ---------------------------------------------------------------------------
-const E = 'meubelpaneel-licht-eiken', W = 'mdf-wit-gegrond', HB = 'hardboard';
+const E = 'berken-multiplex', W = 'mdf-gegrond', HB = 'hardboard';
 const DEMO = [
   { id: 'back', name: 'Achterwand', mat: HB, x: 0, y: 0, z: 0, w: 800, h: 1800, d: 3 },
   { id: 'side_l', name: 'Zijwand links', mat: E, x: 0, y: 0, z: 3, w: 18, h: 1800, d: 327 },
@@ -346,38 +346,50 @@ function setBuilding(on, n = 0) {
 }
 
 // ---------- zaaglijst ----------
+function sheetCard(sh, compact = false) {
+  const plates = sh.layouts.slice(0, compact ? 2 : 3).map(l => plateSvg(sh.plate, l, sh.color)).join('');
+  const more = sh.layouts.length > (compact ? 2 : 3) ? `<span class="plates__more">+${sh.layouts.length - (compact ? 2 : 3)}</span>` : '';
+  return `
+    <div class="saw-group${sh.error ? ' is-warn' : ''}">
+      <div class="saw-group__head"><span class="swatch" style="--c:${sh.color}"></span><strong>${esc(sh.name)} · ${sh.thickness} mm</strong><span class="saw-group__cost">${sh.error ? '—' : euro(sh.cost)}</span></div>
+      ${sh.error ? `<div class="saw-group__err">${esc(sh.error)}</div>` : `
+      <div class="saw-group__plate">${sh.count}× hele plaat ${sh.plate.l} × ${sh.plate.w} mm à ${euro(sh.plate.price)} · ${Math.round(sh.utilization * 100)}% benut</div>
+      ${compact ? '' : `<div class="plates">${plates}${more}</div>`}`}
+      ${sh.lines.map(l => `
+        <div class="saw-line" data-ids="${l.ids.join(',')}">
+          <div class="saw-line__main">
+            <span class="saw-line__qty">${l.qty}×</span>
+            <span class="saw-line__name">${esc(l.names.join(', '))}</span>
+            <span class="saw-line__dims-r">${l.lengthMm} × ${l.widthMm}</span>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function totalsHtml(s) {
+  return `
+    <div><span>${s.plateCount} ${s.plateCount === 1 ? 'hele plaat' : 'hele platen'}, door Ad op maat gezaagd</span><span>${euro(s.subtotal)}</span></div>
+    <div><span>Bezorgen met eigen transportbus</span><span>${s.shipping ? euro(s.shipping) : '—'}</span></div>
+    <div class="saw-hint">Afhalen in Heemskerk is gratis</div>
+    <div class="saw-total"><span>Totaal incl. btw</span><strong>${euro(s.total)}</strong></div>`;
+}
+
 function renderSawlist(s, live = false) {
   const body = $('#sawlistBody');
   $('#barTotal').textContent = euro(s.total);
   $('#mobileTotal').textContent = euro(s.total);
-  $('#sawCount').textContent = `${s.partCount} onderdelen · ${s.lines.length} regels`;
-  if (!s.lines.length) { body.innerHTML = `<p class="saw-empty">De zaaglijst vult zich automatisch terwijl de AI je meubel ontwerpt.</p>`; return; }
-  const byMat = {};
-  s.lines.forEach(l => (byMat[l.mat] ||= []).push(l));
-  body.innerHTML = s.materials.map(m => `
-    <div class="saw-group">
-      <div class="saw-group__head"><span class="swatch" style="--c:${m.color}"></span><strong>${esc(m.name)}</strong><span>${m.areaM2.toFixed(2).replace('.', ',')} m²</span></div>
-      ${byMat[m.mat].map(l => `
-        <div class="saw-line${l.available ? '' : ' is-warn'}" data-ids="${l.ids.join(',')}">
-          <div class="saw-line__main">
-            <span class="saw-line__qty">${l.qty}×</span>
-            <span class="saw-line__name">${esc(l.names.join(', '))}</span>
-            <span class="saw-line__price">${euro(l.total)}</span>
-          </div>
-          <div class="saw-line__dims">${l.lengthMm} × ${l.widthMm} × ${l.thickness} mm${l.notes.length ? ` · <em>${esc(l.notes.join(', '))}</em>` : ''}</div>
-        </div>`).join('')}
-      ${m.discount ? `<div class="saw-group__disc">Staffelkorting ${m.discountPct}% <span>− ${euro(m.discount)}</span></div>` : ''}
-    </div>`).join('');
-  $('#sawTotals').innerHTML = `
-    <div><span>Materiaal &amp; zagen</span><span>${euro(s.subtotal)}</span></div>
-    ${s.discount ? `<div class="is-disc"><span>Staffelkorting</span><span>− ${euro(s.discount)}</span></div>` : ''}
-    <div><span>Verzending NL</span><span>${s.shipping ? euro(s.shipping) : 'Gratis'}</span></div>
-    ${s.toFreeShipping ? `<div class="saw-hint">Nog ${euro(s.toFreeShipping)} tot gratis verzending</div>` : ''}
-    <div class="saw-total"><span>Totaal incl. btw</span><strong>${euro(s.total)}</strong></div>`;
+  $('#sawCount').textContent = `${s.partCount} onderdelen · ${s.plateCount} plat${s.plateCount === 1 ? '' : 'en'}`;
+  if (!s.lines.length) { body.innerHTML = `<p class="saw-empty">De zaaglijst en plaatindeling vullen zich automatisch terwijl de AI je meubel ontwerpt.</p>`; $('#sawTotals').innerHTML = ''; return; }
+  body.innerHTML = s.sheets.map(sh => sheetCard(sh)).join('') + `<p class="saw-note">Je koopt hele platen; Ad zaagt daaruit tot op de millimeter nauwkeurig je onderdelen. Reststukken krijg je op verzoek mee.</p>`;
+  $('#sawTotals').innerHTML = totalsHtml(s);
   body.classList.toggle('is-live', live);
   body.querySelectorAll('.saw-line').forEach(row => {
     row.addEventListener('mouseenter', () => viewer?.highlight(row.dataset.ids.split(',')));
     row.addEventListener('mouseleave', () => viewer?.highlight([]));
+  });
+  body.querySelectorAll('.plate-svg rect[data-id]').forEach(r => {
+    r.addEventListener('mouseenter', () => viewer?.highlight([r.dataset.id]));
+    r.addEventListener('mouseleave', () => viewer?.highlight([]));
   });
 }
 
@@ -459,7 +471,8 @@ function openOrder() {
   const s = state.sawlist;
   $('#orderTitle').textContent = state.design.name;
   $('#orderSummary').textContent = state.design.summary || '';
-  $('#orderLines').innerHTML = s.lines.map(l => `<tr><td>${l.qty}×</td><td>${esc(l.names.join(', '))}<small>${esc(l.materialName)}</small></td><td>${l.lengthMm} × ${l.widthMm} × ${l.thickness}</td><td>${euro(l.total)}</td></tr>`).join('');
+  $('#orderLines').innerHTML = s.sheets.map(sh => `<tr class="order-sheet"><td>${sh.count}×</td><td><strong>${esc(sh.name)} · ${sh.thickness} mm</strong><small>Hele plaat ${sh.plate ? `${sh.plate.l} × ${sh.plate.w} mm · levertijd ${esc(sh.levertijd)}` : esc(sh.error)}</small></td><td>${sh.lines.reduce((n, l) => n + l.qty, 0)} onderdelen</td><td>${euro(sh.cost)}</td></tr>`
+    + sh.lines.map(l => `<tr class="order-part"><td></td><td>${l.qty}× ${esc(l.names.join(', '))}</td><td>${l.lengthMm} × ${l.widthMm} × ${l.thickness}</td><td></td></tr>`).join('')).join('');
   $('#orderTotals').innerHTML = $('#sawTotals').innerHTML;
   $('#orderModal').hidden = false;
 }

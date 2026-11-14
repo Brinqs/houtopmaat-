@@ -1,7 +1,7 @@
 // Winkelwagen → afrekenen (test) → bedankt → 3D-bouwinstructies met AI-bouwassistent.
 import * as THREE from 'three';
 import { Viewer } from './viewer.js';
-import { validateDesign, buildSawlist, partLetters, euro, MATERIAL_BY_SLUG } from './sawlist.js';
+import { validateDesign, buildSawlist, partLetters, euro, MATERIAL_BY_SLUG, plateSvg } from './sawlist.js';
 import { getCart, setCart, cartTotals, updateBadges, createOrder, getOrder, saveOrder } from './store.js';
 import { PRICING_RULES } from './materials.js';
 
@@ -39,20 +39,20 @@ function route() {
 // ===========================================================================
 function summaryHtml(t, { delivery = 'bezorgen', cta = '' } = {}) {
   const shipping = delivery === 'afhalen' ? 0 : t.shipping;
-  const total = Math.round((t.subtotal - t.discount + shipping) * 100) / 100;
+  const total = Math.round((t.subtotal + shipping) * 100) / 100;
+  const lev = [...new Set(t.sheets.map(sh => sh.levertijd))].sort().at(-1);
   return `
     <h3>Overzicht</h3>
+    <div class="sum-sheets">${t.sheets.map(sh => `<div><span><i class="swatch" style="--c:${sh.color}"></i>${sh.count}× ${esc(sh.name)} ${sh.thickness} mm</span><span>${euro(sh.cost)}</span></div>`).join('')}</div>
     <div class="saw-totals">
-      <div><span>Materiaal &amp; zagen (${t.partCount} onderdelen)</span><span>${euro(t.subtotal)}</span></div>
-      ${t.discount ? `<div class="is-disc"><span>Staffelkorting</span><span>− ${euro(t.discount)}</span></div>` : ''}
-      <div><span>${delivery === 'afhalen' ? 'Afhalen Heemskerk' : 'Verzending NL'}</span><span>${shipping ? euro(shipping) : 'Gratis'}</span></div>
-      ${delivery !== 'afhalen' && t.toFreeShipping ? `<div class="saw-hint">Nog ${euro(t.toFreeShipping)} tot gratis verzending</div>` : ''}
+      <div><span>${t.plateCount} ${t.plateCount === 1 ? 'hele plaat' : 'hele platen'} · ${t.partCount} onderdelen</span><span>${euro(t.subtotal)}</span></div>
+      <div><span>${delivery === 'afhalen' ? 'Afhalen in Heemskerk' : 'Bezorgen met eigen transportbus'}</span><span>${shipping ? euro(shipping) : 'Gratis'}</span></div>
       <div class="saw-total"><span>Totaal incl. btw</span><strong>${euro(total)}</strong></div>
     </div>
     ${cta}
     <ul class="summary__usps">
-      <li>${ICON_CHECK}Tot op 1 mm nauwkeurig gezaagd</li>
-      <li>${ICON_CHECK}Levering binnen 3-8 werkdagen</li>
+      <li>${ICON_CHECK}Tot op de millimeter nauwkeurig gezaagd</li>
+      <li>${ICON_CHECK}Levertijd ${esc(lev || '10-15 werkdagen')}</li>
       <li>${ICON_CHECK}Gratis stap-voor-stap 3D-bouwinstructies</li>
     </ul>`;
 }
@@ -75,9 +75,11 @@ function renderCart() {
       <div class="cart-item__info">
         <h3>${esc(it.name)}</h3>
         <p>${esc(it.summary)}</p>
-        <p class="muted">${s.partCount} gezaagde onderdelen · ${s.lines.length} zaaglijstregels</p>
-        <details class="cart-item__saw"><summary>Bekijk zaaglijst</summary>
-          <table>${s.lines.map(l => `<tr><td>${l.qty}×</td><td>${esc(l.names.join(', '))}<small>${esc(l.materialName)}</small></td><td>${l.lengthMm}×${l.widthMm}×${l.thickness}</td><td>${euro(l.total)}</td></tr>`).join('')}</table>
+        <p class="muted">${s.partCount} onderdelen uit ${s.plateCount} ${s.plateCount === 1 ? 'hele plaat' : 'hele platen'}</p>
+        <details class="cart-item__saw"><summary>Bekijk zaaglijst en plaatindeling</summary>
+          ${s.sheets.map(sh => `<div class="cart-sheet"><strong>${sh.count}× ${esc(sh.name)} ${sh.thickness} mm${sh.plate ? ` · plaat ${sh.plate.l} × ${sh.plate.w}` : ''}</strong><span>${euro(sh.cost)}</span></div>
+            ${sh.plate ? `<div class="plates">${sh.layouts.slice(0, 3).map(l => plateSvg(sh.plate, l, sh.color)).join('')}</div>` : ''}
+            <table>${sh.lines.map(l => `<tr><td>${l.qty}×</td><td>${esc(l.names.join(', '))}</td><td>${l.lengthMm} × ${l.widthMm} × ${l.thickness}</td></tr>`).join('')}</table>`).join('')}
         </details>
       </div>
       <div class="cart-item__side">
@@ -110,7 +112,7 @@ function renderCheckout() {
     const delivery = form.delivery.value;
     $('#addressFields').hidden = delivery === 'afhalen';
     const t = cartTotals(items);
-    $('#shipPrice').textContent = t.shipping ? euro(t.shipping) : 'Gratis';
+    $('#shipPrice').textContent = euro(t.shipping);
     $('#checkoutSummary').innerHTML = `<div class="mini-items">${items.map(it => `<div class="mini-item">${it.thumb ? `<img src="${it.thumb}" alt="">` : ''}<span><strong>${esc(it.name)}</strong><small>${it.qty} set${it.qty > 1 ? 's' : ''}</small></span></div>`).join('')}</div>` + summaryHtml(t, { delivery });
   };
   form.onchange = update;
@@ -140,6 +142,7 @@ function initCheckout() {
     await new Promise(r => setTimeout(r, 1400));
     const f = k => form[k].value.trim();
     const order = createOrder({
+      rest: form.rest.checked,
       customer: { firstName: f('firstName'), lastName: f('lastName'), email: f('email'), phone: f('phone'), street: f('street'), number: f('number'), addition: f('addition'), zip: f('zip'), city: f('city') },
       delivery: form.delivery.value, payment: form.payment.value,
     });
@@ -171,9 +174,9 @@ function renderThanks(id) {
     </div>
 
     <ol class="timeline">
-      <li class="is-done"><span>${ICON_CHECK}</span><div><strong>Bestelling ontvangen</strong><small>Bevestiging naar ${esc(c.email)} (test, niet verstuurd)</small></div></li>
-      <li><span>2</span><div><strong>Op maat zagen</strong><small>Tot op 1 mm nauwkeurig, elk onderdeel gelabeld met zijn letter</small></div></li>
-      <li><span>3</span><div><strong>${o.delivery === 'afhalen' ? 'Klaar om af te halen' : 'Bezorging'}</strong><small>${o.delivery === 'afhalen' ? 'De Trompet 1050, Heemskerk · we mailen je' : `Binnen 3-8 werkdagen naar ${esc(c.street)} ${esc(c.number)}, ${esc(c.city)}`}</small></div></li>
+      <li class="is-done"><span>${ICON_CHECK}</span><div><strong>Bestelling ontvangen</strong><small>Ad controleert je bestelling en mailt de definitieve orderbevestiging naar ${esc(c.email)} (test, niet verstuurd)</small></div></li>
+      <li><span>2</span><div><strong>Op maat zagen</strong><small>Tot op de millimeter nauwkeurig op ons computergestuurde machinepark${o.rest ? ', reststukken gaan mee' : ''}</small></div></li>
+      <li><span>3</span><div><strong>${o.delivery === 'afhalen' ? 'Klaar om af te halen' : 'Bezorging'}</strong><small>${o.delivery === 'afhalen' ? 'De Trompet 1050, Heemskerk · je krijgt bericht wanneer het klaarligt' : `Met onze eigen transportbus naar ${esc(c.street)} ${esc(c.number)}, ${esc(c.city)} · track & trace via Routigo de dag ervoor`}</small></div></li>
       <li><span>4</span><div><strong>In elkaar zetten</strong><small>Met de 3D-instructies en de AI-bouwassistent</small></div></li>
     </ol>
 

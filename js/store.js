@@ -40,16 +40,16 @@ export function saveOrder(order) {
   // thumbnails niet dubbel opslaan als het krap wordt
   if (!write(ORDERS, list)) { order.items.forEach(i => (i.thumb = null)); write(ORDERS, list); }
 }
-export function createOrder({ customer, delivery, payment }) {
+export function createOrder({ customer, delivery, payment, rest = false }) {
   const items = getCart();
   const totals = cartTotals(items);
   const shipping = delivery === 'afhalen' ? 0 : totals.shipping;
   const order = {
     id: 'ADZ-T' + Math.floor(100000 + Math.random() * 900000),
     createdAt: new Date().toISOString(), test: true,
-    customer, delivery, payment,
+    customer, delivery, payment, rest,
     items: items.map(({ name, summary, parts, thumb, qty }) => ({ name, summary, parts, thumb, qty })),
-    totals: { subtotal: totals.subtotal, discount: totals.discount, shipping, total: Math.round((totals.subtotal - totals.discount + shipping) * 100) / 100, partCount: totals.partCount },
+    totals: { subtotal: totals.subtotal, shipping, total: Math.round((totals.subtotal + shipping) * 100) / 100, partCount: totals.partCount, plateCount: totals.plateCount },
     plans: {},
   };
   saveOrder(order);
