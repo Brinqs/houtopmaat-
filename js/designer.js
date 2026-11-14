@@ -130,7 +130,7 @@ function addUserMsg(text) {
 function newAssistantTurn() {
   const d = document.createElement('div');
   d.className = 'msg msg--ai';
-  d.innerHTML = `<img class="msg__avatar" src="img/favicon.svg" alt=""><div class="msg__body">
+  d.innerHTML = `<img class="msg__avatar" src="img/favicon.png" alt=""><div class="msg__body">
     <div class="typing"><span></span><span></span><span></span></div></div>`;
   log().appendChild(d); scrollChat();
   return { el: d, body: d.querySelector('.msg__body'), text: null, textRaw: '', thinking: null, tool: null };

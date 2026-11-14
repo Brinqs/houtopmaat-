@@ -408,7 +408,7 @@ function renderQuick() {
 function addAssistMsg(role, text) {
   const d = document.createElement('div');
   d.className = `msg msg--${role === 'user' ? 'user' : 'ai'}`;
-  d.innerHTML = role === 'user' ? `<div class="bubble">${esc(text)}</div>` : `<img class="msg__avatar" src="img/favicon.svg" alt=""><div class="msg__body"><div class="bubble">${md(text)}</div></div>`;
+  d.innerHTML = role === 'user' ? `<div class="bubble">${esc(text)}</div>` : `<img class="msg__avatar" src="img/favicon.png" alt=""><div class="msg__body"><div class="bubble">${md(text)}</div></div>`;
   $('#assistLog').appendChild(d); $('#assistLog').scrollTop = 1e9;
   return d.querySelector('.bubble');
 }
