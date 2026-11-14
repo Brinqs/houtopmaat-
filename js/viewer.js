@@ -261,9 +261,9 @@ export class Viewer {
     const focus = new Set(this.highlighted); if (this.hoverId) focus.add(this.hoverId);
     for (const [id, e] of this.parts) {
       const on = focus.has(id);
-      e.mesh.material.emissive.setHex(on ? 0xbd5c17 : 0x000000);
+      e.mesh.material.emissive.setHex(on ? 0x5c9e4b : 0x000000);
       e.mesh.material.emissiveIntensity = on ? 0.35 : 0;
-      e.edges.material.color.setHex(on ? 0x9b4a13 : 0x1d2327);
+      e.edges.material.color.setHex(on ? 0x3f7d33 : 0x1d2327);
       e.dim = focus.size > 0 && !on;
     }
   }
@@ -276,7 +276,7 @@ export class Viewer {
     const b = this.bounds();
     if (b.isEmpty()) return;
     const { min, max } = b, off = 0.06;
-    const mat = new THREE.LineBasicMaterial({ color: 0x9b4a13 });
+    const mat = new THREE.LineBasicMaterial({ color: 0x66452f });
     const line = (a, z, label, at) => {
       const g = new THREE.BufferGeometry().setFromPoints([a, z]);
       this.dimGroup.add(new THREE.Line(g, mat));

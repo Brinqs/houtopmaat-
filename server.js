@@ -30,7 +30,7 @@ const materialTable = MATERIALS.map(m =>
   `- ${m.slug}: ${m.name} — ${Object.entries(m.prices).map(([t, p]) => `${t} mm €${p}/m²`).join(', ')} — max ${m.maxLengthCm * 10}×${m.maxWidthCm * 10} mm — ${m.use}`
 ).join('\n');
 
-const SYSTEM = `Je bent de AI-meubelontwerper van HoutOpMaatGezaagd.nl, een zagerij in Zoetermeer die plaatmateriaal tot op de millimeter op maat zaagt en losse onderdelen levert (geen montage). Je helpt particulieren en vakmensen om in een gesprek een meubel te ontwerpen dat zij daarna als zaaglijst bestellen.
+const SYSTEM = `Je bent de AI-meubelontwerper van Adzaagt.nl, een zagerij in Heemskerk met een modern machinepark die plaatmateriaal tot op de millimeter op maat zaagt en losse onderdelen levert (geen montage). Je helpt particulieren en vakmensen om in een gesprek een meubel te ontwerpen dat zij daarna als zaaglijst bestellen.
 
 ## Hoe je werkt
 - Spreek Nederlands, je-vorm, warm en deskundig. Houd berichten kort (meestal 2–5 zinnen); geen kopjes.
@@ -289,7 +289,7 @@ function describeParts(parts) {
   return parts.map(p => `- ${map[p.id]} | id=${p.id} | ${p.name} | ${MATERIAL_BY_SLUG[p.mat].name} | ${p.lengthMm}×${p.widthMm}×${p.thickness} mm | positie x=${p.x} y=${p.y} z=${p.z}, maat w=${p.w} h=${p.h} d=${p.d}`).join('\n');
 }
 
-const PLAN_SYSTEM = `Je bent een ervaren meubelmaker die heldere bouwinstructies schrijft in de stijl van een IKEA-boekje, voor klanten van HoutOpMaatGezaagd.nl. De klant ontvangt alleen losse, op maat gezaagde platen; beslag (schroeven, deuvels, scharnieren, ophangbeslag) is NIET meegeleverd.
+const PLAN_SYSTEM = `Je bent een ervaren meubelmaker die heldere bouwinstructies schrijft in de stijl van een IKEA-boekje, voor klanten van Adzaagt.nl. De klant ontvangt alleen losse, op maat gezaagde platen; beslag (schroeven, deuvels, scharnieren, ophangbeslag) is NIET meegeleverd.
 
 Maak een logische bouwvolgorde zoals een vakman het zou doen (bijv. eerst de kast liggend opbouwen: bodem en zijwanden, dan tussenschotten en legplanken, top, achterwand om haaks te zetten, plint, als laatste deuren/fronten). Coördinaten: x = breedte, y = hoogte (vloer = 0), z = diepte (achter = 0 → voor).
 
@@ -387,7 +387,7 @@ function assemblySystem(ctx) {
   if (!v.ok) return null;
   const plan = normalizePlan(ctx.plan, v.parts);
   const { map } = partLetters(v.parts);
-  return `Je bent de bouwassistent van HoutOpMaatGezaagd.nl (zagerij in Zoetermeer). De klant heeft een meubel besteld als losse, op maat gezaagde platen en zet het nu zelf in elkaar met de stap-voor-stap 3D-instructies. Help met korte, praktische antwoorden (meestal 2–4 zinnen, je-vorm, Nederlands). Verwijs naar onderdelen met hun lettercode. Denk aan veiligheid (voorboren, met twee personen tillen, hoge kasten aan de muur borgen). Beslag is niet meegeleverd; adviseer gerust maten en aantallen. Bij een probleem met het zaagwerk zelf (verkeerde maat, beschadiging): verwijs naar de klantenservice, 079 - 204 02 22. Elk bericht begint met de stap waar de klant op dat moment is.
+  return `Je bent de bouwassistent van Adzaagt.nl (zagerij in Heemskerk). De klant heeft een meubel besteld als losse, op maat gezaagde platen en zet het nu zelf in elkaar met de stap-voor-stap 3D-instructies. Help met korte, praktische antwoorden (meestal 2–4 zinnen, je-vorm, Nederlands). Verwijs naar onderdelen met hun lettercode. Denk aan veiligheid (voorboren, met twee personen tillen, hoge kasten aan de muur borgen). Beslag is niet meegeleverd; adviseer gerust maten en aantallen. Bij een probleem met het zaagwerk zelf (verkeerde maat, beschadiging): verwijs naar de klantenservice: 0251 - 342 395 of klantenservice@adzaagt.nl. Elk bericht begint met de stap waar de klant op dat moment is.
 
 Meubel: ${v.name}${v.summary ? ` — ${v.summary}` : ''}
 
@@ -467,6 +467,6 @@ http.createServer((req, res) => {
   if (req.method === 'GET') return serveStatic(req, res);
   res.writeHead(405).end();
 }).listen(PORT, '127.0.0.1', () => {
-  console.log(`HoutOpMaatGezaagd demo: http://localhost:${PORT}`);
+  console.log(`Adzaagt.nl demo: http://localhost:${PORT}`);
   if (!process.env.ANTHROPIC_API_KEY) console.warn('Let op: ANTHROPIC_API_KEY ontbreekt (.env). De AI-ontwerper werkt pas als die is ingevuld.');
 });

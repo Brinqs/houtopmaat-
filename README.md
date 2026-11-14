@@ -1,8 +1,10 @@
-# HoutOpMaatGezaagd: redesign-voorstel met AI-meubelontwerper
+# Adzaagt.nl: redesign-voorstel met AI-meubelontwerper
 
-Vernieuwde homepage (header, home en footer) voor houtopmaatgezaagd.nl, met als blikvanger een
+Vernieuwde homepage (header, home en footer) voor adzaagt.nl (logo, kleuren en bedrijfsgegevens van adzaagt.nl; moderne eigen vormgeving), met als blikvanger een
 **AI-meubelontwerper**: de bezoeker typt wat hij wil maken, Claude stelt gerichte vragen, bouwt live
-een 3D-model en de zaaglijst rekent direct met de echte prijzen van de site.
+een 3D-model en de zaaglijst rekent direct met echte prijzen.
+
+> Let op: materialen, prijzen, prijsregels en verzendvoorwaarden komen nog uit de catalogus van houtopmaatgezaagd.nl (eerste versie van dit voorstel). Vervang `js/materials.js` door het assortiment van Adzaagt voordat dit live gaat.
 
 ## Starten
 

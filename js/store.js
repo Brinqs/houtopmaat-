@@ -45,7 +45,7 @@ export function createOrder({ customer, delivery, payment }) {
   const totals = cartTotals(items);
   const shipping = delivery === 'afhalen' ? 0 : totals.shipping;
   const order = {
-    id: 'HOM-T' + Math.floor(100000 + Math.random() * 900000),
+    id: 'ADZ-T' + Math.floor(100000 + Math.random() * 900000),
     createdAt: new Date().toISOString(), test: true,
     customer, delivery, payment,
     items: items.map(({ name, summary, parts, thumb, qty }) => ({ name, summary, parts, thumb, qty })),

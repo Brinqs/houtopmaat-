@@ -26,7 +26,7 @@ function route() {
   document.body.classList.toggle('manual-open', view === 'instructies');
   window.scrollTo({ top: 0, behavior: 'instant' });
   const titles = { winkelwagen: 'Winkelwagen', afrekenen: 'Afrekenen', bedankt: 'Bedankt voor je bestelling', instructies: 'Bouwinstructies' };
-  document.title = `${titles[view] || 'Winkelwagen'} | HoutOpMaatGezaagd`;
+  document.title = `${titles[view] || 'Winkelwagen'} | Adzaagt.nl`;
   if (view === 'winkelwagen') renderCart();
   else if (view === 'afrekenen') renderCheckout();
   else if (view === 'bedankt') renderThanks(id);
@@ -45,7 +45,7 @@ function summaryHtml(t, { delivery = 'bezorgen', cta = '' } = {}) {
     <div class="saw-totals">
       <div><span>Materiaal &amp; zagen (${t.partCount} onderdelen)</span><span>${euro(t.subtotal)}</span></div>
       ${t.discount ? `<div class="is-disc"><span>Staffelkorting</span><span>− ${euro(t.discount)}</span></div>` : ''}
-      <div><span>${delivery === 'afhalen' ? 'Afhalen Zoetermeer' : 'Verzending NL'}</span><span>${shipping ? euro(shipping) : 'Gratis'}</span></div>
+      <div><span>${delivery === 'afhalen' ? 'Afhalen Heemskerk' : 'Verzending NL'}</span><span>${shipping ? euro(shipping) : 'Gratis'}</span></div>
       ${delivery !== 'afhalen' && t.toFreeShipping ? `<div class="saw-hint">Nog ${euro(t.toFreeShipping)} tot gratis verzending</div>` : ''}
       <div class="saw-total"><span>Totaal incl. btw</span><strong>${euro(total)}</strong></div>
     </div>
@@ -120,7 +120,7 @@ function renderCheckout() {
 function initCheckout() {
   const form = $('#checkoutForm');
   $('#fillTest').addEventListener('click', () => {
-    const v = { firstName: 'Test', lastName: 'Klant', email: 'test@voorbeeld.nl', phone: '', zip: '2722 NB', number: '115', addition: '', street: 'Edisonstraat', city: 'Zoetermeer' };
+    const v = { firstName: 'Test', lastName: 'Klant', email: 'test@voorbeeld.nl', phone: '', zip: '1967 DA', number: '1050', addition: '', street: 'De Trompet', city: 'Heemskerk' };
     Object.entries(v).forEach(([k, val]) => (form[k].value = val));
     form.terms.checked = true;
   });
@@ -160,7 +160,7 @@ function renderThanks(id) {
     <div class="thanks__badge">${ICON_CHECK}</div>
     <span class="eyebrow">Bestelling ${esc(o.id)} · testbestelling</span>
     <h1>Gefeliciteerd, ${esc(c.firstName)}!</h1>
-    <p class="thanks__lead">Je meubel is besteld. We zagen al je onderdelen tot op de millimeter in onze werkplaats in Zoetermeer. In de tussentijd kun je de bouwinstructies alvast bekijken.</p>
+    <p class="thanks__lead">Je meubel is besteld. We zagen al je onderdelen tot op de millimeter op ons machinepark in Heemskerk. In de tussentijd kun je de bouwinstructies alvast bekijken.</p>
 
     <div class="thanks__items">
       ${o.items.map((it, i) => `<div class="thanks__item">
@@ -173,7 +173,7 @@ function renderThanks(id) {
     <ol class="timeline">
       <li class="is-done"><span>${ICON_CHECK}</span><div><strong>Bestelling ontvangen</strong><small>Bevestiging naar ${esc(c.email)} (test, niet verstuurd)</small></div></li>
       <li><span>2</span><div><strong>Op maat zagen</strong><small>Tot op 1 mm nauwkeurig, elk onderdeel gelabeld met zijn letter</small></div></li>
-      <li><span>3</span><div><strong>${o.delivery === 'afhalen' ? 'Klaar om af te halen' : 'Bezorging'}</strong><small>${o.delivery === 'afhalen' ? 'Edisonstraat 115, Zoetermeer · we mailen je' : `Binnen 3-8 werkdagen naar ${esc(c.street)} ${esc(c.number)}, ${esc(c.city)}`}</small></div></li>
+      <li><span>3</span><div><strong>${o.delivery === 'afhalen' ? 'Klaar om af te halen' : 'Bezorging'}</strong><small>${o.delivery === 'afhalen' ? 'De Trompet 1050, Heemskerk · we mailen je' : `Binnen 3-8 werkdagen naar ${esc(c.street)} ${esc(c.number)}, ${esc(c.city)}`}</small></div></li>
       <li><span>4</span><div><strong>In elkaar zetten</strong><small>Met de 3D-instructies en de AI-bouwassistent</small></div></li>
     </ol>
 
@@ -189,7 +189,7 @@ function renderThanks(id) {
 function confetti() {
   const cv = $('#confetti'), ctx = cv.getContext('2d');
   const W = cv.width = innerWidth, H = cv.height = innerHeight;
-  const colors = ['#e8942a', '#bd5c17', '#9b4a13', '#f6b45e', '#24313a', '#d8b98d'];
+  const colors = ['#6CAF5A', '#66452F', '#a6d98f', '#8b6a50', '#1f2723', '#cccccc'];
   const ps = Array.from({ length: 160 }, () => ({ x: W / 2 + (Math.random() - .5) * 200, y: H * .3, vx: (Math.random() - .5) * 14, vy: -Math.random() * 14 - 4, r: Math.random() * 6 + 4, c: colors[Math.random() * colors.length | 0], a: Math.random() * 6, va: (Math.random() - .5) * .3 }));
   const t0 = performance.now();
   (function frame(t) {
